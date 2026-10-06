@@ -7,10 +7,15 @@ import { Partners } from "@/components/sections/Partners";
 import { Projects } from "@/components/sections/Projects";
 import { SiteShell } from "@/components/site/site-shell";
 import { company, heroSlides } from "@/lib/data";
-import { db, getPublishedPosts, getPublishedProjects, getSettings } from "@/lib/store";
+import { getEquipments, getPublishedPosts, getPublishedProjects, getSettings } from "@/lib/store";
 
-export default function HomePage() {
-  const settings = getSettings();
+export default async function HomePage() {
+  const [settings, equipments, projects, posts] = await Promise.all([
+    getSettings(),
+    getEquipments(),
+    getPublishedProjects(),
+    getPublishedPosts(),
+  ]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -31,10 +36,10 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <Hero slides={heroSlides} stats={settings.stats} />
       <About />
-      <Capacity equipments={db().equipments} />
-      <Projects projects={getPublishedProjects()} />
+      <Capacity equipments={equipments} />
+      <Projects projects={projects} />
       <Partners />
-      <News posts={getPublishedPosts()} />
+      <News posts={posts} />
       <Contact settings={settings} />
     </SiteShell>
   );

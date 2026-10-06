@@ -1,12 +1,12 @@
 import { PageHeader } from "@/components/admin/page-header";
 import { ProfilePdfCard } from "@/components/admin/profile-pdf-card";
 import { SettingsForm } from "@/components/admin/settings-form";
-import { db } from "@/lib/store";
+import { getProfileDownloads, getSettings } from "@/lib/store";
 
 export const metadata = { title: "Cài đặt hệ thống" };
 
-export default function AdminSettingsPage() {
-  const { settings, metrics } = db();
+export default async function AdminSettingsPage() {
+  const [settings, profileDownloads] = await Promise.all([getSettings(), getProfileDownloads()]);
   return (
     <>
       <PageHeader title="Cài đặt hệ thống" description="Thông tin liên hệ, số liệu trang chủ và tệp Company Profile." />
@@ -24,7 +24,7 @@ export default function AdminSettingsPage() {
           }}
         />
         <div>
-          <ProfilePdfCard updatedAt={settings.profilePdfUpdatedAt} isLocal={!!settings.profilePdfFile} downloads={metrics.profileDownloads} />
+          <ProfilePdfCard updatedAt={settings.profilePdfUpdatedAt} isLocal={!!settings.profilePdfFile} downloads={profileDownloads} />
         </div>
       </div>
     </>

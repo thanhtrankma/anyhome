@@ -7,22 +7,20 @@ import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/site/site-shell";
 import { Badge } from "@/components/ui/badge";
 import { postCategoryLabels } from "@/lib/data";
-import { getPublishedPosts, getSettings } from "@/lib/store";
-
-const findPost = (slug: string) => getPublishedPosts().find((p) => p.slug === slug);
+import { getPublishedPostBySlug, getSettings } from "@/lib/store";
 
 export async function generateMetadata({ params }: PageProps<"/tin-tuc/[slug]">): Promise<Metadata> {
-  const post = findPost((await params).slug);
+  const post = await getPublishedPostBySlug((await params).slug);
   if (!post) return {};
   return { title: post.title, description: post.excerpt, openGraph: { images: [post.cover] } };
 }
 
 export default async function PostPage({ params }: PageProps<"/tin-tuc/[slug]">) {
-  const post = findPost((await params).slug);
+  const post = await getPublishedPostBySlug((await params).slug);
   if (!post) notFound();
 
   return (
-    <SiteShell settings={getSettings()} solidHeader>
+    <SiteShell settings={await getSettings()} solidHeader>
       <article className="pt-28 pb-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <Link href="/#news" className="flex w-fit items-center gap-2 text-sm text-muted-foreground hover:text-navy-900">

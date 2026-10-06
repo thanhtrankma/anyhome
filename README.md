@@ -20,7 +20,7 @@ font Be Vietnam Pro vì Cinzel không hỗ trợ tiếng Việt) và quy tắc t
 
 ```bash
 npm install
-cp .env.example .env.local   # đặt ADMIN_USER / ADMIN_PASSWORD
+cp .env.example .env.local   # điền key Supabase + ADMIN_USER / ADMIN_PASSWORD
 npm run dev
 ```
 
@@ -47,18 +47,21 @@ components/
   ui/lightbox-gallery.tsx      Xem ảnh high-res (zoom, vuốt)
 lib/
   data.ts                  Dữ liệu gốc từ profile (seed)
-  store.ts                 Kho dữ liệu JSON tạm (.data/db.json)
+  supabase.ts              Client Supabase (secret key, server-only)
+  store.ts                 Truy vấn Supabase + map dữ liệu
   actions/                 Server Actions (CRUD, upload, settings) — đều kiểm tra quyền admin
   validations/             Schema Zod (post, project, lead, settings)
 proxy.ts                   Chặn /admin bằng Basic Auth
 ```
 
-## Lưu trữ dữ liệu
+## Lưu trữ dữ liệu (Supabase)
 
-`lib/store.ts` lưu vào `.data/db.json` và ảnh vào `.data/uploads/` — đủ để demo đầy đủ luồng CRUD.
-Xoá thư mục `.data/` để quay về dữ liệu gốc. Khi triển khai thật (Vercel/serverless có filesystem
-chỉ đọc), thay module này bằng database (Postgres + Prisma/Drizzle) và object storage (S3/R2) —
-các Server Action chỉ phụ thuộc vào API của `store.ts`.
+- **Database**: Supabase Postgres. Schema ở `supabase/schema.sql`, dữ liệu gốc ở `supabase/seed.sql`
+  (sinh từ `lib/data.ts` bằng `npm run db:seed-sql`). Chạy lần lượt 2 file trong Supabase → SQL Editor.
+- **Ảnh upload**: bucket public `uploads`. **Profile PDF**: bucket private `documents`.
+- Server truy cập bằng `SUPABASE_SECRET_KEY` (`lib/supabase.ts`, chỉ chạy phía server). Các bảng bật RLS
+  và không có policy, nên publishable key không đọc/ghi được dữ liệu.
+- `lib/store.ts` là lớp truy vấn + map snake_case ↔ camelCase; Server Actions ghi thẳng qua client Supabase.
 
 ## Dữ liệu cần thay trước khi go-live
 

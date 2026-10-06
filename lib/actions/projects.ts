@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 
 import { fail, ok, type ActionResult } from "@/lib/actions/result";
 import { requireAdmin } from "@/lib/actions/guard";
-import { db, newId, persist } from "@/lib/store";
+import { newId, projectToRow, unwrap } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 import type { Project, PublishStatus } from "@/lib/types";
 import { projectSchema, type ProjectInput } from "@/lib/validations/project";
 
@@ -15,9 +16,12 @@ export async function saveProject(id: string | null, input: ProjectInput): Promi
   const parsed = projectSchema.safeParse(input);
   if (!parsed.success) return fail("Vui lòng kiểm tra lại các trường bị lỗi", parsed.error);
 
-  const store = db();
   const { render, real, client, gallery, ...rest } = parsed.data;
-  if (store.projects.some((p) => p.slug === rest.slug && p.id !== id)) {
+  const dup = unwrap(
+    await supabase().from("projects").select("id").eq("slug", rest.slug).neq("id", id ?? "").limit(1),
+    "projects",
+  );
+  if (dup.length) {
     return { ok: false, error: "Slug đã tồn tại", fieldErrors: { slug: ["Slug đã được dùng"] } };
   }
 
@@ -28,30 +32,29 @@ export async function saveProject(id: string | null, input: ProjectInput): Promi
     beforeAfter: render && real ? { render, real } : undefined,
   };
 
-  const existing = id ? store.projects.find((p) => p.id === id) : undefined;
-  if (existing) Object.assign(existing, fields);
-  else store.projects.unshift({ ...fields, id: newId("prj"), createdAt: new Date().toISOString() });
+  const table = supabase().from("projects");
+  unwrap(
+    id
+      ? await table.update(projectToRow(fields)).eq("id", id)
+      : await table.insert(projectToRow({ ...fields, id: newId("prj"), createdAt: new Date().toISOString() })),
+    "projects",
+  );
 
-  persist();
   refresh();
   return ok(undefined);
 }
 
 export async function setProjectStatus(id: string, status: PublishStatus): Promise<ActionResult> {
   await requireAdmin();
-  const project = db().projects.find((p) => p.id === id);
-  if (!project) return fail("Không tìm thấy dự án");
-  project.status = status;
-  persist();
+  const rows = unwrap(await supabase().from("projects").update({ status }).eq("id", id).select("id"), "projects");
+  if (!rows.length) return fail("Không tìm thấy dự án");
   refresh();
   return ok(undefined);
 }
 
 export async function deleteProject(id: string): Promise<ActionResult> {
   await requireAdmin();
-  const store = db();
-  store.projects = store.projects.filter((p) => p.id !== id);
-  persist();
+  unwrap(await supabase().from("projects").delete().eq("id", id), "projects");
   refresh();
   return ok(undefined);
 }

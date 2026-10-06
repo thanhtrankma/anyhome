@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   // Dữ liệu quản trị luôn đọc mới theo từng request
   await connection();
-  const newLeads = getLeads().filter((l) => l.status === "new");
+  const newLeads = (await getLeads()).filter((l) => l.status === "new");
 
   return (
     <div className="min-h-dvh bg-muted/40">

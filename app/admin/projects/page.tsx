@@ -2,12 +2,12 @@ import { Suspense } from "react";
 
 import { PageHeader } from "@/components/admin/page-header";
 import { ProjectsManager } from "@/components/admin/projects-manager";
-import { db } from "@/lib/store";
+import { getProjects } from "@/lib/store";
 
 export const metadata = { title: "Quản lý dự án" };
 
-export default function AdminProjectsPage() {
-  const projects = [...db().projects].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+export default async function AdminProjectsPage() {
+  const projects = await getProjects();
   const published = projects.filter((p) => p.status === "published").length;
 
   return (

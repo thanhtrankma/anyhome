@@ -2,14 +2,13 @@ import { LeadsTable } from "@/components/admin/leads-table";
 import { PageHeader } from "@/components/admin/page-header";
 import { ProfilePdfCard } from "@/components/admin/profile-pdf-card";
 import { LeadStatusBadge } from "@/components/admin/status-badge";
-import { db, getLeads } from "@/lib/store";
+import { getLeads, getProfileDownloads, getSettings } from "@/lib/store";
 import type { LeadStatus } from "@/lib/types";
 
 export const metadata = { title: "Báo giá / Leads" };
 
-export default function AdminLeadsPage() {
-  const leads = getLeads();
-  const { settings, metrics } = db();
+export default async function AdminLeadsPage() {
+  const [leads, settings, profileDownloads] = await Promise.all([getLeads(), getSettings(), getProfileDownloads()]);
   const counts = (["new", "contacted", "quoted", "closed"] as LeadStatus[]).map((s) => ({
     status: s,
     count: leads.filter((l) => l.status === s).length,
@@ -34,7 +33,7 @@ export default function AdminLeadsPage() {
           <ProfilePdfCard
             updatedAt={settings.profilePdfUpdatedAt}
             isLocal={!!settings.profilePdfFile}
-            downloads={metrics.profileDownloads}
+            downloads={profileDownloads}
           />
         </div>
       </div>

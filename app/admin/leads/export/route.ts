@@ -9,7 +9,7 @@ const escape = (value: string | undefined) => {
 
 export async function GET() {
   const header = ["Mã", "Họ tên", "Điện thoại", "Email", "Loại công trình", "Diện tích", "Ngân sách", "Nội dung", "Trạng thái", "Ngày gửi"];
-  const rows = getLeads().map((l) =>
+  const rows = (await getLeads()).map((l) =>
     [
       l.id,
       l.name,

@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 
 import { fail, ok, type ActionResult } from "@/lib/actions/result";
 import { requireAdmin } from "@/lib/actions/guard";
-import { db, newId, persist } from "@/lib/store";
+import { newId, unwrap } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 import { equipmentSchema, type EquipmentInput } from "@/lib/validations/settings";
 
 export async function saveEquipment(id: string | null, input: EquipmentInput): Promise<ActionResult> {
@@ -12,21 +13,19 @@ export async function saveEquipment(id: string | null, input: EquipmentInput): P
   const parsed = equipmentSchema.safeParse(input);
   if (!parsed.success) return fail("Thông tin thiết bị chưa hợp lệ", parsed.error);
 
-  const store = db();
-  const existing = id ? store.equipments.find((e) => e.id === id) : undefined;
-  if (existing) Object.assign(existing, parsed.data);
-  else store.equipments.push({ ...parsed.data, id: newId("eq") });
+  const table = supabase().from("equipments");
+  unwrap(
+    id ? await table.update(parsed.data).eq("id", id) : await table.insert({ ...parsed.data, id: newId("eq") }),
+    "equipments",
+  );
 
-  persist();
   revalidatePath("/", "layout");
   return ok(undefined);
 }
 
 export async function deleteEquipment(id: string): Promise<ActionResult> {
   await requireAdmin();
-  const store = db();
-  store.equipments = store.equipments.filter((e) => e.id !== id);
-  persist();
+  unwrap(await supabase().from("equipments").delete().eq("id", id), "equipments");
   revalidatePath("/", "layout");
   return ok(undefined);
 }

@@ -6,22 +6,26 @@ import { LeadStatusBadge, PublishBadge } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { leadProjectTypeLabels, projectCategoryLabels } from "@/lib/data";
-import { db, getLeadStats, getLeads } from "@/lib/store";
+import { getLeadStats, getLeads, getPosts, getProfileDownloads, getProjects } from "@/lib/store";
 import type { ProjectCategory } from "@/lib/types";
 
 export const metadata = { title: "Tổng quan" };
 
-export default function DashboardPage() {
-  const { projects, posts, metrics } = db();
-  const leads = getLeads();
-  const { new: newLeads, thisWeek: leadsThisWeek, conversion } = getLeadStats();
+export default async function DashboardPage() {
+  const [projects, posts, leads, profileDownloads] = await Promise.all([
+    getProjects(),
+    getPosts(),
+    getLeads(),
+    getProfileDownloads(),
+  ]);
+  const { new: newLeads, thisWeek: leadsThisWeek, conversion } = getLeadStats(leads);
   const publishedProjects = projects.filter((p) => p.status === "published").length;
   const publishedPosts = posts.filter((p) => p.status === "published").length;
 
   const metricsCards = [
     { label: "Tổng dự án", value: projects.length, note: `${publishedProjects} đang hiển thị · ${projects.length - publishedProjects} nháp`, icon: FolderKanban, href: "/admin/projects" },
     { label: "Bài viết", value: posts.length, note: `${publishedPosts} đã xuất bản · ${posts.length - publishedPosts} nháp`, icon: FileText, href: "/admin/posts" },
-    { label: "Lượt tải Profile PDF", value: metrics.profileDownloads, note: "Tổng lượt tải từ website", icon: Download, href: "/admin/settings" },
+    { label: "Lượt tải Profile PDF", value: profileDownloads, note: "Tổng lượt tải từ website", icon: Download, href: "/admin/settings" },
     { label: "Khách hàng mới", value: newLeads, note: `${leadsThisWeek} yêu cầu trong 7 ngày · chốt ${conversion}%`, icon: Inbox, href: "/admin/leads", highlight: newLeads > 0 },
   ];
 
@@ -33,7 +37,7 @@ export default function DashboardPage() {
   const maxCount = Math.max(...byCategory.map((c) => c.count), 1);
   const totalArea = projects.reduce((sum, p) => sum + p.area, 0);
 
-  const recentPosts = [...posts].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 4);
+  const recentPosts = posts.slice(0, 4);
 
   return (
     <>

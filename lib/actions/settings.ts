@@ -1,24 +1,21 @@
 "use server";
 
-import { writeFile, mkdir } from "node:fs/promises";
-import path from "node:path";
-
 import { revalidatePath } from "next/cache";
 
 import { fail, ok, type ActionResult } from "@/lib/actions/result";
 import { requireAdmin } from "@/lib/actions/guard";
-import { DATA_DIR, PROFILE_PDF_FILE, db, persist } from "@/lib/store";
+import { saveSettings } from "@/lib/store";
+import { DOCUMENT_BUCKET, supabase } from "@/lib/supabase";
 import { settingsSchema, type SettingsInput } from "@/lib/validations/settings";
 
-
 const MAX_PDF_BYTES = 20 * 1024 * 1024;
+const PROFILE_PDF_FILE = "profile.pdf";
 
 export async function updateSettings(input: SettingsInput): Promise<ActionResult> {
   await requireAdmin();
   const parsed = settingsSchema.safeParse(input);
   if (!parsed.success) return fail("Cài đặt chưa hợp lệ", parsed.error);
-  Object.assign(db().settings, parsed.data);
-  persist();
+  await saveSettings(parsed.data);
   revalidatePath("/", "layout");
   return ok(undefined);
 }
@@ -33,13 +30,13 @@ export async function uploadProfilePdf(formData: FormData): Promise<ActionResult
   // Kiểm tra chữ ký "%PDF" thay vì tin vào phần mở rộng/mime từ trình duyệt
   if (bytes.subarray(0, 4).toString() !== "%PDF") return fail("Tệp không phải PDF hợp lệ");
 
-  await mkdir(DATA_DIR, { recursive: true });
-  await writeFile(path.join(DATA_DIR, PROFILE_PDF_FILE), bytes);
+  const { error } = await supabase()
+    .storage.from(DOCUMENT_BUCKET)
+    .upload(PROFILE_PDF_FILE, bytes, { contentType: "application/pdf", upsert: true });
+  if (error) return fail(`Không tải lên được: ${error.message}`);
 
-  const settings = db().settings;
-  settings.profilePdfFile = PROFILE_PDF_FILE;
-  settings.profilePdfUpdatedAt = new Date().toISOString();
-  persist();
+  const updatedAt = new Date().toISOString();
+  await saveSettings({ profilePdfFile: PROFILE_PDF_FILE, profilePdfUpdatedAt: updatedAt });
   revalidatePath("/admin", "layout");
-  return ok({ updatedAt: settings.profilePdfUpdatedAt });
+  return ok({ updatedAt });
 }
