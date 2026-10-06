@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 840" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="600" height="840" fill="#fbf7ec"/>
+  <rect x="24" y="24" width="552" height="792" fill="none" stroke="#b8923f" stroke-width="3"/>
+  <rect x="40" y="40" width="520" height="760" fill="none" stroke="#dcc27e" stroke-width="1"/>
+  <text x="300" y="120" text-anchor="middle" font-size="16" fill="#1c2139" letter-spacing="2">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</text>
+  <text x="300" y="146" text-anchor="middle" font-size="14" fill="#1c2139">Độc lập – Tự do – Hạnh phúc</text>
+  <circle cx="300" cy="250" r="58" fill="none" stroke="#b8923f" stroke-width="2"/>
+  <path d="M300 214 L330 280 L270 280 Z" fill="#1c2139"/><path d="M300 236 L318 280 L282 280 Z" fill="#dcc27e"/>
+  <text x="300" y="380" text-anchor="middle" font-size="30" font-weight="bold" fill="#1c2139">CHỨNG CHỈ HÀNH NGHỀ</text>
+  <text x="300" y="424" text-anchor="middle" font-size="26" font-weight="bold" fill="#9a7631">GIÁM SÁT THI CÔNG</text>
+  <text x="300" y="490" text-anchor="middle" font-size="18" fill="#3a4268">CÔNG TY CỔ PHẦN TƯ VẤN CÔNG NGHỆ XÂY DỰNG ANYHOME</text>
+  <text x="300" y="530" text-anchor="middle" font-size="18" fill="#3a4268">Dân dụng &amp; Công nghiệp</text>
+  <g stroke="#d6dae8" stroke-width="2"><line x1="100" x2="500" y1="580" y2="580"/><line x1="100" x2="500" y1="606" y2="606"/><line x1="100" x2="500" y1="632" y2="632"/><line x1="100" x2="500" y1="658" y2="658"/><line x1="100" x2="500" y1="684" y2="684"/></g>
+  <circle cx="440" cy="735" r="40" fill="none" stroke="#c0392b" stroke-width="3" opacity=".6"/>
+  <text x="300" y="790" text-anchor="middle" font-size="12" fill="#7a85a8">Ảnh minh hoạ — thay bằng bản scan gốc</text>
+</svg>

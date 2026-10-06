@@ -1,0 +1,142 @@
+import { Compass, Handshake, Leaf, Lightbulb, Quote, Ruler, Target, Users } from "lucide-react";
+import Image from "next/image";
+
+import { Certificates } from "@/components/sections/Certificates";
+import { OrgChart } from "@/components/sections/OrgChart";
+import { Reveal, SectionHeading, StaggerGroup, StaggerItem } from "@/components/site/motion";
+import { certificates, company, coreValues, img, leadership, milestones, mission, orgChart, vision } from "@/lib/data";
+
+const valueIcons = { users: Users, lightbulb: Lightbulb, ruler: Ruler, handshake: Handshake, leaf: Leaf } as const;
+
+export function About() {
+  return (
+    <section id="about" className="relative overflow-hidden bg-white py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Giới thiệu chung */}
+        <div className="grid items-center gap-14 lg:grid-cols-2">
+          <Reveal className="relative">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
+              <Image src={img("1600607687939-ce8a6c25118c", 1400)} alt="Không gian nội thất do Anyhome thiết kế" fill sizes="(min-width:1024px) 45vw, 100vw" className="object-cover" />
+            </div>
+            <div className="absolute -right-4 -bottom-8 w-56 rounded-xl bg-navy-900 p-6 text-white shadow-2xl sm:-right-8 sm:w-64">
+              <p className="text-5xl font-bold text-gold-300">{company.founded}</p>
+              <p className="mt-2 text-sm text-navy-100">Năm thành lập · Mô hình tổng thầu Design & Build</p>
+            </div>
+            <div className="absolute -top-6 -left-6 -z-10 size-40 bg-gold-100" aria-hidden />
+          </Reveal>
+
+          <div>
+            <SectionHeading
+              eyebrow="Về Anyhome"
+              title={
+                <>
+                  Nâng niu công trình,
+                  <br />
+                  <span className="font-serif font-medium text-gold-600 italic">kiến tạo vượt thời gian</span>
+                </>
+              }
+              description={company.intro}
+            />
+            <Reveal delay={0.1}>
+              <figure className="mt-8 border-l-2 border-gold-400 pl-6">
+                <Quote className="mb-2 size-6 text-gold-400" />
+                <blockquote className="font-serif text-lg leading-relaxed text-navy-800 italic">{company.letter}</blockquote>
+                <figcaption className="mt-3 text-sm font-semibold text-navy-900">
+                  {company.representative} <span className="font-normal text-muted-foreground">— Chủ tịch HĐQT</span>
+                </figcaption>
+              </figure>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* Tầm nhìn – Sứ mệnh – Giá trị cốt lõi */}
+        <div className="mt-28 grid gap-6 lg:grid-cols-3">
+          {[
+            { icon: Compass, title: "Tầm nhìn", body: vision },
+            { icon: Target, title: "Sứ mệnh", body: mission },
+          ].map((item, i) => (
+            <Reveal key={item.title} delay={i * 0.1} className="group rounded-2xl border border-navy-100 bg-gold-50/40 p-8 transition-colors duration-500 hover:border-gold-300 hover:bg-gold-50">
+              <item.icon className="size-10 text-gold-500 transition-transform duration-500 group-hover:rotate-12" strokeWidth={1.4} />
+              <h3 className="mt-6 text-xl font-bold text-navy-900">{item.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+            </Reveal>
+          ))}
+          <Reveal delay={0.2} className="rounded-2xl bg-navy-900 p-8 text-white">
+            <h3 className="text-xl font-bold">Giá trị cốt lõi</h3>
+            <ul className="mt-6 space-y-4">
+              {coreValues.map((v) => {
+                const Icon = valueIcons[v.icon];
+                return (
+                  <li key={v.title} className="flex items-center gap-4 text-sm">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-gold-300/15 text-gold-300">
+                      <Icon className="size-4" />
+                    </span>
+                    {v.title}
+                  </li>
+                );
+              })}
+            </ul>
+          </Reveal>
+        </div>
+
+        {/* Lịch sử */}
+        <div className="mt-28">
+          <SectionHeading eyebrow="Hành trình phát triển" title="Lịch sử hình thành" align="center" />
+          <StaggerGroup className="relative mt-14 grid gap-8 md:grid-cols-3" step={0.15}>
+            <div className="absolute top-[22px] right-0 left-0 hidden h-px bg-gradient-to-r from-gold-300 via-gold-400 to-gold-200 md:block" aria-hidden />
+            {milestones.map((m) => (
+              <StaggerItem key={m.period} className="relative">
+                <span className="relative z-10 inline-flex h-11 items-center rounded-full border-2 border-gold-400 bg-white px-5 text-sm font-bold text-navy-900">
+                  {m.period}
+                </span>
+                <h3 className="mt-5 text-lg font-bold text-navy-900">{m.title}</h3>
+                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                  {m.items.map((it) => (
+                    <li key={it} className="flex gap-2">
+                      <span className="mt-2 size-1.5 shrink-0 rotate-45 bg-gold-400" />
+                      {it}
+                    </li>
+                  ))}
+                </ul>
+              </StaggerItem>
+            ))}
+          </StaggerGroup>
+        </div>
+
+        {/* Nhân sự & Sơ đồ tổ chức */}
+        <div className="mt-28 grid gap-12 lg:grid-cols-[1fr_1.6fr]">
+          <div>
+            <SectionHeading
+              eyebrow="Năng lực nhân sự"
+              title="Tổ chức tinh gọn, vận hành đồng bộ"
+              description={`Khoảng ${company.staff} nhân sự gồm kiến trúc sư, kỹ sư xây dựng, nhà thiết kế nội thất, cán bộ kỹ thuật, quản lý dự án và đội thi công giàu kinh nghiệm — phối hợp xuyên suốt từ khảo sát, thiết kế, dự toán đến thi công và hoàn thiện.`}
+            />
+            <StaggerGroup className="mt-8 space-y-3">
+              {leadership.map((p) => (
+                <StaggerItem key={p.name} className="flex items-center justify-between gap-4 border-b border-navy-100 pb-3">
+                  <span className="font-semibold text-navy-900">{p.name}</span>
+                  <span className="text-right text-sm text-gold-700">{p.role}</span>
+                </StaggerItem>
+              ))}
+            </StaggerGroup>
+          </div>
+          <Reveal>
+            <OrgChart root={orgChart} />
+          </Reveal>
+        </div>
+
+        {/* Pháp lý */}
+        <div className="mt-28">
+          <SectionHeading
+            eyebrow="Thông tin pháp lý"
+            title="Giấy phép & Chứng chỉ năng lực"
+            description="Hồ sơ pháp lý đầy đủ, minh bạch — bấm vào từng chứng chỉ để xem bản độ phân giải cao."
+          />
+          <div className="mt-12">
+            <Certificates items={certificates} />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -1,26 +1,201 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Bỏ qua vùng .theme-light (site công khai) khi admin bật dark mode */
+@custom-variant dark (&:where(.dark *):not(.theme-light, .theme-light *));
+
+/* ─────────────────────────────────────────────────────────────
+   Anyhome brand palette — trích từ Company Profile:
+   Navy đậm (nền bìa) + Vàng đồng/kem (khối tam giác, slogan)
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  --color-navy-50: #eef0f6;
+  --color-navy-100: #d6dae8;
+  --color-navy-200: #aab2cd;
+  --color-navy-300: #7a85a8;
+  --color-navy-400: #545f85;
+  --color-navy-500: #3a4268;
+  --color-navy-600: #2a3152;
+  --color-navy-700: #222844;
+  --color-navy-800: #1c2139;
+  --color-navy-900: #151a2e;
+  --color-navy-950: #0d1020;
+
+  --color-gold-50: #fbf7ec;
+  --color-gold-100: #f4ead0;
+  --color-gold-200: #ead9a6;
+  --color-gold-300: #dcc27e;
+  --color-gold-400: #cdab5e;
+  --color-gold-500: #b8923f;
+  --color-gold-600: #9a7631;
+  --color-gold-700: #7a5c27;
+  --color-gold-800: #5b4420;
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-ken-burns: ken-burns 9s ease-out forwards;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes ken-burns {
+    from { transform: scale(1.12); }
+    to { transform: scale(1); }
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-be-vietnam);
+  --font-serif: var(--font-playfair);
+  --font-heading: var(--font-be-vietnam);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Light tokens. `.theme-light` lets the public site stay on-brand
+   even when the admin has switched <html> to dark mode. */
+:root,
+.theme-light {
+  --background: #ffffff;
+  --foreground: #151a2e;
+  --card: #ffffff;
+  --card-foreground: #151a2e;
+  --popover: #ffffff;
+  --popover-foreground: #151a2e;
+  --primary: #1c2139;
+  --primary-foreground: #fbf7ec;
+  --secondary: #f4ead0;
+  --secondary-foreground: #1c2139;
+  --muted: #f5f4f0;
+  --muted-foreground: #5d6380;
+  --accent: #fbf7ec;
+  --accent-foreground: #1c2139;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #e6e3da;
+  --input: #dedad0;
+  --ring: #cdab5e;
+  --chart-1: #1c2139;
+  --chart-2: #cdab5e;
+  --chart-3: #545f85;
+  --chart-4: #9a7631;
+  --chart-5: #aab2cd;
+  --radius: 0.625rem;
+  --sidebar: #151a2e;
+  --sidebar-foreground: #d6dae8;
+  --sidebar-primary: #dcc27e;
+  --sidebar-primary-foreground: #151a2e;
+  --sidebar-accent: #222844;
+  --sidebar-accent-foreground: #f4ead0;
+  --sidebar-border: #2a3152;
+  --sidebar-ring: #cdab5e;
+}
+
+.dark {
+  --background: #0d1020;
+  --foreground: #eef0f6;
+  --card: #151a2e;
+  --card-foreground: #eef0f6;
+  --popover: #151a2e;
+  --popover-foreground: #eef0f6;
+  --primary: #dcc27e;
+  --primary-foreground: #151a2e;
+  --secondary: #222844;
+  --secondary-foreground: #eef0f6;
+  --muted: #1c2139;
+  --muted-foreground: #9aa2c0;
+  --accent: #222844;
+  --accent-foreground: #f4ead0;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: rgb(255 255 255 / 9%);
+  --input: rgb(255 255 255 / 14%);
+  --ring: #cdab5e;
+  --chart-1: #dcc27e;
+  --chart-2: #7a85a8;
+  --chart-3: #b8923f;
+  --chart-4: #aab2cd;
+  --chart-5: #545f85;
+  --sidebar: #0a0d1a;
+  --sidebar-foreground: #c3c9dc;
+  --sidebar-primary: #dcc27e;
+  --sidebar-primary-foreground: #151a2e;
+  --sidebar-accent: #1c2139;
+  --sidebar-accent-foreground: #f4ead0;
+  --sidebar-border: rgb(255 255 255 / 7%);
+  --sidebar-ring: #cdab5e;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans scroll-smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Rich text output (Tiptap editor + bài viết công khai) */
+  .prose-anyhome {
+    @apply text-[15px] leading-7 text-foreground/90;
+  }
+  .prose-anyhome :where(h2) { @apply mt-8 mb-3 text-2xl font-semibold text-foreground; }
+  .prose-anyhome :where(h3) { @apply mt-6 mb-2 text-xl font-semibold text-foreground; }
+  .prose-anyhome :where(p) { @apply my-3; }
+  .prose-anyhome :where(ul) { @apply my-3 list-disc pl-6; }
+  .prose-anyhome :where(ol) { @apply my-3 list-decimal pl-6; }
+  .prose-anyhome :where(blockquote) { @apply my-4 border-l-4 border-gold-400 bg-muted/60 py-2 pl-4 italic; }
+  .prose-anyhome :where(a) { @apply text-gold-600 underline underline-offset-4; }
+  .prose-anyhome :where(img) { @apply my-5 rounded-lg; }
+  .prose-anyhome :where(iframe) { @apply my-5 aspect-video h-auto w-full rounded-lg; }
+  .prose-anyhome :where(strong) { @apply font-semibold text-foreground; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
