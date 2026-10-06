@@ -1,13 +1,13 @@
 import "server-only";
 
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 
-import { isAuthorized } from "@/lib/auth";
+import { SESSION_COOKIE, isAuthorized } from "@/lib/auth";
 
 /** Gọi đầu mọi Server Action quản trị. */
 export async function requireAdmin() {
-  const h = await headers();
-  if (!isAuthorized(h.get("authorization"))) {
+  const jar = await cookies();
+  if (!(await isAuthorized(jar.get(SESSION_COOKIE)?.value))) {
     throw new Error("Unauthorized");
   }
 }

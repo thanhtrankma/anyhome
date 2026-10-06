@@ -1,11 +1,11 @@
 "use client";
 
-import { Bell, LogOut, Menu, UserRound } from "lucide-react";
+import { Bell, ExternalLink, LogOut, Menu, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useTransition } from "react";
 
-import { SEGMENT_LABELS } from "@/components/admin/nav";
+import { SEGMENT_LABELS, initials } from "@/components/admin/nav";
 import { SidebarNav } from "@/components/admin/sidebar";
 import { ThemeToggle } from "@/components/admin/theme-toggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -28,6 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { logout } from "@/lib/actions/auth";
 import { leadProjectTypeLabels } from "@/lib/data";
 import type { Lead } from "@/lib/types";
 
@@ -39,9 +40,10 @@ const timeAgo = (iso: string) => {
   return `${Math.round(hours / 24)} ngày trước`;
 };
 
-export function AdminHeader({ newLeads }: { newLeads: Lead[] }) {
+export function AdminHeader({ newLeads, userName }: { newLeads: Lead[]; userName: string }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [loggingOut, startLogout] = useTransition();
 
   const segments = pathname.split("/").filter(Boolean);
   const crumbs = segments.map((seg, i) => ({
@@ -50,14 +52,14 @@ export function AdminHeader({ newLeads }: { newLeads: Lead[] }) {
   }));
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur-lg sm:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur-lg sm:gap-3 sm:px-6 lg:px-8">
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetTrigger render={<Button variant="ghost" size="icon-lg" className="lg:hidden" aria-label="Mở menu quản trị" />}>
           <Menu />
         </SheetTrigger>
         <SheetContent side="left" className="border-none p-0 data-[side=left]:w-72" showCloseButton={false}>
           <SheetTitle className="sr-only">Menu quản trị</SheetTitle>
-          <SidebarNav newLeads={newLeads.length} onNavigate={() => setMobileOpen(false)} />
+          <SidebarNav newLeads={newLeads.length} userName={userName} onNavigate={() => setMobileOpen(false)} />
         </SheetContent>
       </Sheet>
 
@@ -122,23 +124,30 @@ export function AdminHeader({ newLeads }: { newLeads: Lead[] }) {
       <DropdownMenu>
         <DropdownMenuTrigger render={<Button variant="ghost" className="h-10 gap-2 rounded-full pr-1 pl-1 sm:pr-3" aria-label="Tài khoản" />}>
           <Avatar className="size-8">
-            <AvatarFallback className="bg-navy-900 text-xs font-bold text-gold-300">AT</AvatarFallback>
+            <AvatarFallback className="bg-navy-900 text-xs font-bold text-gold-300">{initials(userName)}</AvatarFallback>
           </Avatar>
           <span className="hidden text-left text-xs leading-tight sm:block">
-            <span className="block font-semibold">Admin</span>
+            <span className="block font-semibold">{userName}</span>
             <span className="block text-muted-foreground">Quản trị viên</span>
           </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-52">
           <DropdownMenuGroup>
-            <DropdownMenuLabel>Tài khoản quản trị</DropdownMenuLabel>
+            <DropdownMenuLabel className="leading-tight">
+              <span className="block text-sm font-semibold text-foreground">{userName}</span>
+              <span className="block text-xs font-normal text-muted-foreground">Quản trị viên</span>
+            </DropdownMenuLabel>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem render={<Link href="/admin/settings" />}>
-            <UserRound /> Cài đặt
+            <Settings /> Giao diện & cài đặt
           </DropdownMenuItem>
-          <DropdownMenuItem render={<Link href="/" />}>
-            <LogOut /> Về trang chủ
+          <DropdownMenuItem render={<Link href="/" target="_blank" />}>
+            <ExternalLink /> Xem website
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem variant="destructive" disabled={loggingOut} onClick={() => startLogout(() => logout())}>
+            <LogOut /> Đăng xuất
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

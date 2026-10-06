@@ -6,13 +6,22 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { Logo } from "@/components/site/logo";
-import { NAV_ITEMS } from "@/components/site/nav-items";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { telHref } from "@/lib/phone";
 import { cn } from "@/lib/utils";
 
-export function SiteHeader({ hotlines, solid = false }: { hotlines: string[]; solid?: boolean }) {
+export function SiteHeader({
+  hotlines,
+  navItems,
+  ctaLabel,
+  solid = false,
+}: {
+  hotlines: string[];
+  navItems: { label: string; href: string }[];
+  ctaLabel: string;
+  solid?: boolean;
+}) {
   const [hotline] = hotlines;
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(solid);
@@ -31,7 +40,7 @@ export function SiteHeader({ hotlines, solid = false }: { hotlines: string[]; so
 
   // Scrollspy: đánh dấu mục đang nằm giữa màn hình
   useEffect(() => {
-    const sections = NAV_ITEMS.map((n) => document.getElementById(n.href.split("#")[1])).filter((el): el is HTMLElement => !!el);
+    const sections = navItems.map((n) => document.getElementById(n.href.split("#")[1])).filter((el): el is HTMLElement => !!el);
     if (!sections.length) return;
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => e.isIntersecting && setActiveId(e.target.id)),
@@ -39,7 +48,7 @@ export function SiteHeader({ hotlines, solid = false }: { hotlines: string[]; so
     );
     sections.forEach((s) => io.observe(s));
     return () => io.disconnect();
-  }, []);
+  }, [navItems]);
 
   // Giữ chip đang active ở giữa hàng chip. KHÔNG dùng scrollIntoView: nó cuộn cả các
   // vùng cuộn cha, kể cả visual viewport của trình duyệt → header/bottom bar bị lệch, khuyết.
@@ -67,7 +76,7 @@ export function SiteHeader({ hotlines, solid = false }: { hotlines: string[]; so
 
         <nav aria-label="Điều hướng chính" className="hidden lg:block">
           <ul className="flex items-center gap-1">
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
@@ -93,7 +102,7 @@ export function SiteHeader({ hotlines, solid = false }: { hotlines: string[]; so
             render={<Link href="/#contact" />}
             className="hidden h-10 rounded-full bg-gold-300 px-5 font-semibold text-navy-900 hover:bg-gold-200 sm:inline-flex"
           >
-            Nhận báo giá
+            {ctaLabel}
           </Button>
 
           <Sheet>
@@ -110,7 +119,7 @@ export function SiteHeader({ hotlines, solid = false }: { hotlines: string[]; so
                 <Logo className="mb-10" />
                 <AnimatePresence>
                   <ul className="flex flex-col">
-                    {NAV_ITEMS.map((item, i) => (
+                    {navItems.map((item, i) => (
                       <motion.li
                         key={item.href}
                         initial={{ opacity: 0, x: 24 }}
@@ -160,7 +169,7 @@ export function SiteHeader({ hotlines, solid = false }: { hotlines: string[]; so
             className="overflow-hidden border-t border-white/10 lg:hidden"
           >
             <div ref={chipsRef} className="relative flex gap-2 overflow-x-auto overscroll-x-contain px-4 py-2 [scrollbar-width:none]">
-              {NAV_ITEMS.map((item) => {
+              {navItems.map((item) => {
                 const active = item.href.endsWith(`#${activeId}`);
                 return (
                   <Link

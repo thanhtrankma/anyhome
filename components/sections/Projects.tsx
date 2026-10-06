@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { LightboxGallery } from "@/components/ui/lightbox-gallery";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { SiteContent } from "@/lib/content";
 import { projectCategoryLabels } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import type { Project, ProjectCategory } from "@/lib/types";
@@ -33,7 +34,7 @@ const PAGE_SIZE = 9;
 const renderLook = (p: Project) =>
   p.beforeAfter && p.beforeAfter.render === p.beforeAfter.real ? "grayscale-[.85] contrast-125 brightness-110 sepia-[.15]" : undefined;
 
-export function Projects({ projects }: { projects: Project[] }) {
+export function Projects({ projects, heading }: { projects: Project[]; heading: SiteContent["sections"] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [selected, setSelected] = useState<Project | null>(null);
@@ -54,9 +55,9 @@ export function Projects({ projects }: { projects: Project[] }) {
     <section id="projects" className="bg-[#f7f5ef] py-14 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="Dự án tiêu biểu"
-          title="Hơn 500 công trình trên 20 tỉnh thành"
-          description="Từ nhà máy, nhà xưởng công nghiệp quy mô lớn đến biệt thự, căn hộ và không gian thương mại — mỗi công trình là sự kết tinh của sáng tạo, kỹ thuật và tâm huyết."
+          eyebrow={heading.projectsEyebrow}
+          title={heading.projectsTitle}
+          description={heading.projectsDescription}
         />
 
         {/* Showcase So sánh 3D vs Thực tế */}

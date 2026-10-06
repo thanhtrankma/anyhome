@@ -4,18 +4,19 @@ import Link from "next/link";
 
 import { RailHint } from "@/components/site/mobile-ui";
 import { SectionHeading, StaggerGroup, StaggerItem } from "@/components/site/motion";
+import type { SiteContent } from "@/lib/content";
 import { postCategoryLabels } from "@/lib/data";
 import type { Post } from "@/lib/types";
 
 const fmt = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }) : "";
 
-export function News({ posts }: { posts: Post[] }) {
+export function News({ posts, heading }: { posts: Post[]; heading: SiteContent["sections"] }) {
   if (!posts.length) return null;
   return (
     <section id="news" className="bg-white py-14 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeading eyebrow="Tin tức & Kiến thức" title="Câu chuyện từ công trường" />
+        <SectionHeading eyebrow={heading.newsEyebrow} title={heading.newsTitle} />
         <StaggerGroup className="rail mt-8 sm:mt-12 md:grid-cols-3 md:gap-8">
           {posts.slice(0, 3).map((post) => (
             <StaggerItem key={post.id}>

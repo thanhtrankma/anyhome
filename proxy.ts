@@ -1,14 +1,22 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { isAuthorized } from "@/lib/auth";
+import { SESSION_COOKIE, isAuthorized } from "@/lib/auth";
 
-export function proxy(request: NextRequest) {
-  if (isAuthorized(request.headers.get("authorization"))) return NextResponse.next();
+const LOGIN_PATH = "/admin/login";
 
-  return new NextResponse("Yêu cầu đăng nhập quản trị", {
-    status: 401,
-    headers: { "WWW-Authenticate": 'Basic realm="Anyhome Admin", charset="UTF-8"' },
-  });
+export async function proxy(request: NextRequest) {
+  const { pathname, search } = request.nextUrl;
+  const authorized = await isAuthorized(request.cookies.get(SESSION_COOKIE)?.value);
+
+  if (pathname === LOGIN_PATH) {
+    // Đã đăng nhập thì không cần thấy lại trang đăng nhập
+    return authorized ? NextResponse.redirect(new URL("/admin", request.url)) : NextResponse.next();
+  }
+  if (authorized) return NextResponse.next();
+
+  const url = new URL(LOGIN_PATH, request.url);
+  if (pathname !== "/admin") url.searchParams.set("next", pathname + search);
+  return NextResponse.redirect(url);
 }
 
 export const config = {

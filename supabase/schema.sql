@@ -108,6 +108,15 @@ $$;
 
 revoke execute on function public.increment_profile_downloads() from public, anon, authenticated;
 
+/* ─────────────────────────── Nội dung website (Giao diện & cài đặt) ─────────────────────────── */
+
+-- Mỗi nhóm trong lib/content.ts là 1 dòng; trường thiếu dùng mặc định trong code
+create table if not exists public.site_content (
+  key         text primary key,
+  data        jsonb not null default '{}',
+  updated_at  timestamptz not null default now()
+);
+
 /* ─────────────────────────── RLS ─────────────────────────── */
 
 alter table public.projects      enable row level security;
@@ -115,6 +124,7 @@ alter table public.posts         enable row level security;
 alter table public.equipments    enable row level security;
 alter table public.leads         enable row level security;
 alter table public.site_settings enable row level security;
+alter table public.site_content  enable row level security;
 
 /* ─────────────────────────── Storage ─────────────────────────── */
 

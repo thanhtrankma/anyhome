@@ -6,10 +6,16 @@ import { LeadStatusBadge, PublishBadge } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { leadProjectTypeLabels, projectCategoryLabels } from "@/lib/data";
+import { adminName } from "@/lib/auth";
 import { getLeadStats, getLeads, getPosts, getProfileDownloads, getProjects } from "@/lib/store";
 import type { ProjectCategory } from "@/lib/types";
 
 export const metadata = { title: "Tổng quan" };
+
+const greeting = () => {
+  const hour = Number(new Date().toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: "Asia/Ho_Chi_Minh" }));
+  return hour < 11 ? "Chào buổi sáng" : hour < 14 ? "Chào buổi trưa" : hour < 18 ? "Chào buổi chiều" : "Chào buổi tối";
+};
 
 export default async function DashboardPage() {
   const [projects, posts, leads, profileDownloads] = await Promise.all([
@@ -42,7 +48,8 @@ export default async function DashboardPage() {
   return (
     <>
       <PageHeader
-        title="Xin chào, Admin 👋"
+        eyebrow={new Date().toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Ho_Chi_Minh" })}
+        title={`${greeting()}, ${adminName()}`}
         description="Tổng quan nội dung website và khách hàng tiềm năng của Anyhome."
         actions={
           <>
@@ -59,7 +66,7 @@ export default async function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metricsCards.map((m) => (
           <Link key={m.label} href={m.href} className="group">
-            <Card className="h-full transition-all group-hover:-translate-y-0.5 group-hover:shadow-md">
+            <Card className="h-full transition-all duration-200 group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-1 group-hover:ring-gold-300/60">
               <CardHeader>
                 <CardDescription>{m.label}</CardDescription>
                 <CardAction>

@@ -25,9 +25,12 @@ npm run dev
 ```
 
 - Website: `http://localhost:3000`
-- Quản trị: `http://localhost:3000/admin` (HTTP Basic Auth)
+- Quản trị: `http://localhost:3000/admin` → đăng nhập tại `/admin/login`
 
 Khi **chưa** đặt `ADMIN_USER`/`ADMIN_PASSWORD`: `/admin` mở tự do ở môi trường dev, và **bị khoá hoàn toàn** ở production.
+
+Phiên đăng nhập là cookie httpOnly ký HMAC (`lib/auth.ts`), hết hạn sau 12 giờ hoặc 30 ngày nếu chọn "Ghi nhớ".
+Khoá ký lấy từ `AUTH_SECRET` (tuỳ chọn); đổi `ADMIN_PASSWORD` sẽ đăng xuất mọi phiên cũ. Sai mật khẩu 5 lần/15 phút sẽ bị chặn tạm.
 
 ## Cấu trúc chính
 
@@ -51,13 +54,17 @@ lib/
   store.ts                 Truy vấn Supabase + map dữ liệu
   actions/                 Server Actions (CRUD, upload, settings) — đều kiểm tra quyền admin
   validations/             Schema Zod (post, project, lead, settings)
-proxy.ts                   Chặn /admin bằng Basic Auth
+proxy.ts                   Chuyển /admin về trang đăng nhập khi chưa có phiên hợp lệ
 ```
 
 ## Lưu trữ dữ liệu (Supabase)
 
 - **Database**: Supabase Postgres. Schema ở `supabase/schema.sql`, dữ liệu gốc ở `supabase/seed.sql`
   (sinh từ `lib/data.ts` bằng `npm run db:seed-sql`). Chạy lần lượt 2 file trong Supabase → SQL Editor.
+  Database đã tạo từ trước khi có mục "Giao diện & cài đặt" thì chạy thêm `supabase/002_site_content.sql`.
+- **Giao diện & cài đặt** (`/admin/settings/<nhóm>`): nội dung website (thông tin chung & SEO, menu, banner,
+  Về Anyhome, Năng lực, tiêu đề các khối, đối tác, chứng chỉ, footer) lưu dạng JSONB trong bảng `site_content`.
+  Cấu hình form ở `lib/content-schema.ts`, mặc định ở `lib/content.ts` — thêm trường vào đó là form tự hiện.
 - **Ảnh upload**: bucket public `uploads`. **Profile PDF**: bucket private `documents`.
 - Server truy cập bằng `SUPABASE_SECRET_KEY` (`lib/supabase.ts`, chỉ chạy phía server). Các bảng bật RLS
   và không có policy, nên publishable key không đọc/ghi được dữ liệu.

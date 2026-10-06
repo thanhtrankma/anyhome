@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { submitLead } from "@/lib/actions/leads";
+import type { SiteContent } from "@/lib/content";
 import { leadProjectTypeLabels } from "@/lib/data";
 import { getHotlines, telHref } from "@/lib/phone";
 import type { SiteSettings } from "@/lib/types";
@@ -34,7 +35,7 @@ const defaultValues: LeadFormValues = {
 
 const budgetItems = Object.fromEntries(BUDGET_OPTIONS.map((b) => [b, b]));
 
-export function Contact({ settings }: { settings: SiteSettings }) {
+export function Contact({ settings, heading }: { settings: SiteSettings; heading: SiteContent["sections"] }) {
   const [pending, startTransition] = useTransition();
   const [done, setDone] = useState(false);
   // Mobile: chỉ hỏi 3 trường bắt buộc, phần còn lại mở khi người dùng muốn
@@ -74,9 +75,9 @@ export function Contact({ settings }: { settings: SiteSettings }) {
         <div>
           <SectionHeading
             tone="light"
-            eyebrow="Liên hệ & Báo giá"
-            title="Bắt đầu công trình mang “chất riêng” của bạn"
-            description="Để lại thông tin — kiến trúc sư Anyhome sẽ tư vấn phương án và gửi báo giá sơ bộ miễn phí trong vòng 24 giờ làm việc."
+            eyebrow={heading.contactEyebrow}
+            title={heading.contactTitle}
+            description={heading.contactDescription}
           />
 
           <Reveal className="mt-6 space-y-5 sm:mt-10">

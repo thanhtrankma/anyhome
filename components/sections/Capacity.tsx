@@ -9,14 +9,16 @@ import { RailHint } from "@/components/site/mobile-ui";
 import { Reveal, SectionHeading, StaggerGroup, StaggerItem } from "@/components/site/motion";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { deliveryCapabilities, equipmentGroupLabels, img, services, workflow } from "@/lib/data";
+import type { SiteContent } from "@/lib/content";
+import { equipmentGroupLabels } from "@/lib/data";
 import type { Equipment, EquipmentGroup } from "@/lib/types";
 
 const serviceIcons = { drafting: DraftingCompass, sofa: Sofa, hardhat: HardHat, clipboard: ClipboardCheck } as const;
 
 type GroupFilter = EquipmentGroup | "all";
 
-export function Capacity({ equipments }: { equipments: Equipment[] }) {
+export function Capacity({ equipments, content }: { equipments: Equipment[]; content: SiteContent["capacity"] }) {
+  const { services, deliveryCapabilities, workflow } = content;
   const [group, setGroup] = useState<GroupFilter>("all");
   const visible = group === "all" ? equipments : equipments.filter((e) => e.group === group);
 
@@ -29,15 +31,15 @@ export function Capacity({ equipments }: { equipments: Equipment[] }) {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           tone="light"
-          eyebrow="Lĩnh vực & Năng lực"
-          title="Một đầu mối — trọn vẹn từ bản vẽ đến bàn giao"
-          description="Anyhome sở hữu năng lực triển khai đồng bộ từ thiết kế, thi công phần thô, hoàn thiện kiến trúc đến sản xuất và lắp đặt nội thất — kiểm soát xuyên suốt chất lượng, tiến độ và chi phí."
+          eyebrow={content.eyebrow}
+          title={content.title}
+          description={content.description}
         />
 
         {/* Lĩnh vực hoạt động */}
         <StaggerGroup className="rail mt-8 sm:mt-14 md:grid-cols-2 md:gap-px md:overflow-hidden md:rounded-2xl md:bg-white/10 lg:grid-cols-4">
           {services.map((s) => {
-            const Icon = serviceIcons[s.icon];
+            const Icon = serviceIcons[s.icon] ?? DraftingCompass;
             return (
               <StaggerItem key={s.title} className="group relative bg-navy-950 p-6 transition-colors duration-300 hover:bg-navy-900 max-md:rounded-2xl max-md:border max-md:border-white/10 sm:p-7">
                 <span className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gold-300 transition-transform duration-300 group-hover:scale-x-100" />
@@ -58,10 +60,10 @@ export function Capacity({ equipments }: { equipments: Equipment[] }) {
         <div className="mt-12 grid gap-10 sm:mt-24 sm:gap-14 lg:grid-cols-2">
           <Reveal className="relative min-w-0">
             <div className="relative hidden aspect-[4/3] overflow-hidden rounded-2xl sm:block">
-              <Image src={img("1541888946425-d81bb19240f5", 1400)} alt="Đội thi công Anyhome tại công trường" fill sizes="(min-width:1024px) 45vw, 100vw" className="object-cover" />
+              <Image src={content.image} alt="Đội thi công Anyhome tại công trường" fill sizes="(min-width:1024px) 45vw, 100vw" className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/10" />
               <p className="absolute right-6 bottom-6 left-6 text-lg font-medium text-gold-100 sm:text-2xl">
-                “Vững chắc từ kết cấu, tinh tế trong hoàn thiện.”
+                {content.quote}
               </p>
             </div>
             <h3 className="text-xl font-bold sm:hidden">Năng lực triển khai</h3>
@@ -76,11 +78,11 @@ export function Capacity({ equipments }: { equipments: Equipment[] }) {
           </Reveal>
 
           <div className="min-w-0">
-            <h3 className="text-xl font-bold sm:text-3xl">Quy trình Design & Build</h3>
-            <p className="mt-2 text-sm text-navy-200">Giám sát chặt chẽ, bảo chứng chất lượng công trình.</p>
+            <h3 className="text-xl font-bold sm:text-3xl">{content.workflowTitle}</h3>
+            <p className="mt-2 text-sm text-navy-200">{content.workflowSubtitle}</p>
             <StaggerGroup className="rail rail-narrow mt-5 sm:mt-8 md:grid-cols-1 md:gap-1" step={0.1}>
               {workflow.map((w) => (
-                <StaggerItem key={w.step} className="group flex gap-4 rounded-xl p-4 transition-colors hover:bg-white/5 max-md:border max-md:border-white/10 sm:gap-5">
+                <StaggerItem key={w.step + w.title} className="group flex gap-4 rounded-xl p-4 transition-colors hover:bg-white/5 max-md:border max-md:border-white/10 sm:gap-5">
                   <span className="text-2xl leading-none font-bold text-gold-300/60 transition-colors group-hover:text-gold-300 sm:text-3xl">{w.step}</span>
                   <div>
                     <h4 className="font-semibold">{w.title}</h4>
@@ -96,7 +98,7 @@ export function Capacity({ equipments }: { equipments: Equipment[] }) {
         {/* Danh mục thiết bị */}
         <div className="mt-14 sm:mt-24">
           <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-            <SectionHeading compact tone="light" eyebrow="Máy móc & Thiết bị" title="Hệ thống thiết bị thi công hiện đại" />
+            <SectionHeading compact tone="light" eyebrow="Máy móc & Thiết bị" title={content.equipmentTitle} />
             <Tabs value={group} onValueChange={(v) => setGroup(v as GroupFilter)}>
               <TabsList className="-mx-4 w-[calc(100%+2rem)] justify-start gap-1 overflow-x-auto rounded-none bg-transparent px-4 [scrollbar-width:none] group-data-horizontal/tabs:h-auto sm:mx-0 sm:w-fit sm:flex-wrap sm:rounded-full sm:bg-white/5 sm:p-1">
                 {(["all", ...Object.keys(equipmentGroupLabels)] as GroupFilter[]).map((g) => (

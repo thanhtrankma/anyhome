@@ -6,12 +6,12 @@ import { News } from "@/components/sections/News";
 import { Partners } from "@/components/sections/Partners";
 import { Projects } from "@/components/sections/Projects";
 import { SiteShell } from "@/components/site/site-shell";
-import { company, heroSlides } from "@/lib/data";
-import { getEquipments, getPublishedPosts, getPublishedProjects, getSettings } from "@/lib/store";
+import { getEquipments, getPublishedPosts, getPublishedProjects, getSettings, getSiteContent } from "@/lib/store";
 
 export default async function HomePage() {
-  const [settings, equipments, projects, posts] = await Promise.all([
+  const [settings, content, equipments, projects, posts] = await Promise.all([
     getSettings(),
+    getSiteContent(),
     getEquipments(),
     getPublishedProjects(),
     getPublishedPosts(),
@@ -20,11 +20,11 @@ export default async function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "GeneralContractor",
-    name: company.legalName,
-    alternateName: company.brand,
-    taxID: company.taxCode,
-    foundingDate: String(company.founded),
-    slogan: company.slogan,
+    name: content.general.legalName,
+    alternateName: content.general.brand,
+    taxID: content.general.taxCode,
+    foundingDate: String(content.general.founded),
+    slogan: content.general.slogan,
     telephone: settings.hotline,
     email: settings.email,
     url: `https://${settings.website}`,
@@ -32,15 +32,15 @@ export default async function HomePage() {
   };
 
   return (
-    <SiteShell settings={settings}>
+    <SiteShell settings={settings} content={content}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <Hero slides={heroSlides} stats={settings.stats} />
-      <About />
-      <Capacity equipments={equipments} />
-      <Projects projects={projects} />
-      <Partners />
-      <News posts={posts} />
-      <Contact settings={settings} />
+      <Hero slides={content.hero.slides} stats={settings.stats} videoUrl={content.hero.videoUrl || undefined} />
+      <About content={content} />
+      <Capacity equipments={equipments} content={content.capacity} />
+      <Projects projects={projects} heading={content.sections} />
+      <Partners items={content.partners.items} heading={content.sections} />
+      <News posts={posts} heading={content.sections} />
+      <Contact settings={settings} heading={content.sections} />
     </SiteShell>
   );
 }

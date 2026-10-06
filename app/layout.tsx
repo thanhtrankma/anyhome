@@ -5,7 +5,7 @@ import { MotionProvider } from "@/components/motion-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { company } from "@/lib/data";
+import { getSiteContent } from "@/lib/store";
 
 import "./globals.css";
 
@@ -17,22 +17,22 @@ const beVietnam = Be_Vietnam_Pro({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://www.anyhome.com.vn"),
-  title: {
-    default: `${company.brand} – ${company.slogan}`,
-    template: `%s | ${company.brand}`,
-  },
-  description:
-    "Anyhome – Tổng thầu Design & Build: thiết kế kiến trúc, nội thất, sản xuất nội thất và thi công xây dựng trọn gói nhà ở cao cấp, biệt thự, nhà xưởng công nghiệp.",
-  keywords: ["Anyhome", "thiết kế kiến trúc", "thi công xây dựng", "nội thất", "biệt thự", "nhà xưởng", "Design & Build"],
-  openGraph: {
-    type: "website",
-    locale: "vi_VN",
-    siteName: company.brand,
-    images: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // Tiêu đề, mô tả và ảnh chia sẻ chỉnh trong /admin/settings/general
+  const { general } = await getSiteContent();
+  return {
+    metadataBase: new URL("https://www.anyhome.com.vn"),
+    title: { default: general.seoTitle, template: `%s | ${general.brand}` },
+    description: general.seoDescription,
+    keywords: [general.brand, "thiết kế kiến trúc", "thi công xây dựng", "nội thất", "biệt thự", "nhà xưởng", "Design & Build"],
+    openGraph: {
+      type: "website",
+      locale: "vi_VN",
+      siteName: general.brand,
+      images: general.ogImage ? [general.ogImage] : undefined,
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#151a2e",

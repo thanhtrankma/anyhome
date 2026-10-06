@@ -11,7 +11,7 @@ import {
   type ColumnFiltersState,
   type SortingState,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, X } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Inbox, Search, SearchX, X } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -81,8 +81,8 @@ export function DataTable<TData>({
   const isFiltered = globalFilter !== "" || columnFilters.length > 0;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+    <div className="overflow-hidden rounded-xl border bg-card shadow-xs">
+      <div className="flex flex-col gap-3 border-b p-3 sm:p-4 lg:flex-row lg:items-center">
         <div className="relative flex-1 lg:max-w-sm">
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -93,7 +93,7 @@ export function DataTable<TData>({
             }}
             placeholder={searchPlaceholder}
             aria-label="Tìm kiếm"
-            className="h-10 pl-9"
+            className="h-10 bg-background pl-9"
           />
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -107,7 +107,7 @@ export function DataTable<TData>({
                 value={value}
                 onValueChange={(v) => column?.setFilterValue(!v || v === ALL ? undefined : v)}
               >
-                <SelectTrigger className="h-10! min-w-40" aria-label={f.label}>
+                <SelectTrigger className="h-10! min-w-40 bg-background" aria-label={f.label}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -137,21 +137,21 @@ export function DataTable<TData>({
         {toolbar && <div className="flex items-center gap-2 lg:ml-auto">{toolbar}</div>}
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-card">
+      <div>
         <Table>
-          <TableHeader className="bg-muted/50">
+          <TableHeader className="bg-muted/40">
             {table.getHeaderGroups().map((hg) => (
               <TableRow key={hg.id} className="hover:bg-transparent">
                 {hg.headers.map((header) => {
                   const sortable = header.column.getCanSort();
                   const dir = header.column.getIsSorted();
                   return (
-                    <TableHead key={header.id} className="h-11 text-xs font-semibold tracking-wide uppercase">
+                    <TableHead key={header.id} className="h-11 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase first:pl-4 last:pr-4">
                       {header.isPlaceholder ? null : sortable ? (
                         <button
                           type="button"
                           onClick={header.column.getToggleSortingHandler()}
-                          className="inline-flex items-center gap-1.5 hover:text-foreground"
+                          className="inline-flex cursor-pointer items-center gap-1.5 rounded transition-colors hover:text-foreground"
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {dir === "asc" ? <ArrowUp className="size-3.5" /> : dir === "desc" ? <ArrowDown className="size-3.5" /> : <ArrowUpDown className="size-3.5 opacity-40" />}
@@ -168,9 +168,9 @@ export function DataTable<TData>({
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} className="transition-colors hover:bg-muted/40">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className={cn("py-3", (cell.column.columnDef.meta as { className?: string } | undefined)?.className)}>
+                    <TableCell key={cell.id} className={cn("py-3 first:pl-4 last:pr-4", (cell.column.columnDef.meta as { className?: string } | undefined)?.className)}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -178,8 +178,13 @@ export function DataTable<TData>({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground">
-                  {isFiltered ? "Không tìm thấy kết quả phù hợp." : emptyText}
+                <TableCell colSpan={columns.length} className="h-40 text-center">
+                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                    <span className="grid size-11 place-items-center rounded-full bg-muted">
+                      {isFiltered ? <SearchX className="size-5" /> : <Inbox className="size-5" />}
+                    </span>
+                    <p className="text-sm">{isFiltered ? "Không tìm thấy kết quả phù hợp." : emptyText}</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -187,7 +192,7 @@ export function DataTable<TData>({
         </Table>
       </div>
 
-      <div className="flex flex-col items-center justify-between gap-3 text-sm text-muted-foreground sm:flex-row">
+      <div className="flex flex-col items-center justify-between gap-3 border-t px-4 py-3 text-sm text-muted-foreground sm:flex-row">
         <p>
           {filtered === 0
             ? "0 kết quả"

@@ -1,5 +1,6 @@
 import "server-only";
 
+import { mergeContent, type ContentKey, type SiteContent } from "@/lib/content";
 import { defaultSettings } from "@/lib/data";
 import { supabase } from "@/lib/supabase";
 import type { Equipment, Lead, Post, Project, SiteSettings } from "@/lib/types";
@@ -244,6 +245,23 @@ export async function saveSettings(patch: Partial<SiteSettings>) {
     .from("site_settings")
     .upsert({ id: 1, ...settingsToRow(patch) });
   unwrap(res, "site_settings");
+}
+
+/** Nội dung "Giao diện & cài đặt". Chưa tạo bảng site_content → dùng mặc định để site vẫn chạy. */
+export async function getSiteContent(): Promise<SiteContent> {
+  const { data, error } = await supabase().from("site_content").select("key, data");
+  if (error) {
+    console.error(`Supabase (site_content): ${error.message}`);
+    return mergeContent({});
+  }
+  return mergeContent(Object.fromEntries((data ?? []).map((r) => [r.key, r.data])));
+}
+
+export async function saveSiteContent(key: ContentKey, data: Record<string, unknown>) {
+  unwrap(
+    await supabase().from("site_content").upsert({ key, data, updated_at: new Date().toISOString() }),
+    "site_content",
+  );
 }
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;

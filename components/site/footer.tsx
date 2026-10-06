@@ -2,39 +2,63 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 
 import { Logo } from "@/components/site/logo";
-import { NAV_ITEMS } from "@/components/site/nav-items";
-import { company } from "@/lib/data";
+import { FacebookIcon, TiktokIcon, YoutubeIcon } from "@/components/site/social-icons";
+import type { SiteContent } from "@/lib/content";
 import { getHotlines, telHref } from "@/lib/phone";
 import type { SiteSettings } from "@/lib/types";
 
-export function SiteFooter({ settings }: { settings: SiteSettings }) {
+export function SiteFooter({ settings, content }: { settings: SiteSettings; content: SiteContent }) {
+  const { general, header, footer } = content;
+  const socials = [
+    { href: general.facebookUrl, label: "Facebook", icon: FacebookIcon },
+    { href: general.youtubeUrl, label: "YouTube", icon: YoutubeIcon },
+    { href: general.tiktokUrl, label: "TikTok", icon: TiktokIcon },
+  ].filter((s) => s.href);
+
   return (
     <footer className="relative overflow-hidden bg-navy-950 pb-20 text-navy-200 md:pb-0">
       <div className="pointer-events-none absolute -top-40 -right-40 hidden size-[480px] rotate-45 bg-gold-300/5 md:block" aria-hidden />
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:gap-12 sm:px-6 sm:py-16 lg:grid-cols-[1.4fr_1fr_1.2fr] lg:px-8">
         <div>
           <Logo />
-          <p className="mt-6 hidden max-w-sm text-sm leading-relaxed text-navy-200/80 sm:block">{company.tagline}</p>
+          <p className="mt-6 hidden max-w-sm text-sm leading-relaxed text-navy-200/80 sm:block">{general.tagline}</p>
           <dl className="mt-6 space-y-1 text-xs text-navy-300">
             <div>
               <dt className="inline">Tên công ty: </dt>
-              <dd className="inline text-navy-100">{company.legalName}</dd>
+              <dd className="inline text-navy-100">{general.legalName}</dd>
             </div>
             <div>
               <dt className="inline">Mã số thuế: </dt>
-              <dd className="inline text-navy-100">{company.taxCode}</dd>
+              <dd className="inline text-navy-100">{general.taxCode}</dd>
             </div>
             <div>
               <dt className="inline">Trụ sở: </dt>
               <dd className="inline">{settings.hqAddress}</dd>
             </div>
           </dl>
+          {socials.length > 0 && (
+            <ul className="mt-6 flex gap-2">
+              {socials.map((s) => (
+                <li key={s.label}>
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="grid size-10 place-items-center rounded-full border border-white/10 text-navy-200 transition-colors hover:border-gold-300 hover:text-gold-200"
+                  >
+                    <s.icon className="size-4" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <nav aria-label="Liên kết chân trang" className="hidden md:block">
-          <h3 className="mb-5 text-sm font-semibold tracking-widest text-gold-300 uppercase">Khám phá</h3>
+          <h3 className="mb-5 text-sm font-semibold tracking-widest text-gold-300 uppercase">{footer.exploreTitle}</h3>
           <ul className="space-y-3 text-sm">
-            {NAV_ITEMS.map((item) => (
+            {header.navItems.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="transition-colors hover:text-gold-200">
                   {item.label}
@@ -50,7 +74,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
         </nav>
 
         <div>
-          <h3 className="mb-5 text-sm font-semibold tracking-widest text-gold-300 uppercase">Liên hệ</h3>
+          <h3 className="mb-5 text-sm font-semibold tracking-widest text-gold-300 uppercase">{footer.contactTitle}</h3>
           <ul className="space-y-4 text-sm">
             <li className="flex gap-3">
               <MapPin className="mt-0.5 size-4 shrink-0 text-gold-300" />
@@ -90,7 +114,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
       </div>
       <div className="border-t border-white/5">
         <p className="mx-auto max-w-7xl px-4 py-6 text-xs text-navy-300 sm:px-6 lg:px-8">
-          © {new Date().getFullYear()} {company.shortName} · {company.closing}
+          © {new Date().getFullYear()} {general.shortName} · {footer.closing}
         </p>
       </div>
     </footer>

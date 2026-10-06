@@ -34,7 +34,7 @@ export function PostsTable({ posts }: { posts: Post[] }) {
       cell: ({ row }) => {
         const p = row.original;
         return (
-          <div className="flex min-w-72 items-center gap-3">
+          <div className="flex max-w-md min-w-72 items-center gap-3">
             <span className="relative h-12 w-16 shrink-0 overflow-hidden rounded-md bg-muted">
               <Image src={p.cover} alt="" fill sizes="64px" className="object-cover" unoptimized={p.cover.startsWith("/uploads/")} />
             </span>

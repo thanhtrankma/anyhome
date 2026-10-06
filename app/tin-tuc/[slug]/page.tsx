@@ -7,7 +7,7 @@ import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/site/site-shell";
 import { Badge } from "@/components/ui/badge";
 import { postCategoryLabels } from "@/lib/data";
-import { getPublishedPostBySlug, getSettings } from "@/lib/store";
+import { getPublishedPostBySlug, getSettings, getSiteContent } from "@/lib/store";
 
 export async function generateMetadata({ params }: PageProps<"/tin-tuc/[slug]">): Promise<Metadata> {
   const post = await getPublishedPostBySlug((await params).slug);
@@ -20,7 +20,7 @@ export default async function PostPage({ params }: PageProps<"/tin-tuc/[slug]">)
   if (!post) notFound();
 
   return (
-    <SiteShell settings={await getSettings()} solidHeader>
+    <SiteShell settings={await getSettings()} content={await getSiteContent()} solidHeader>
       <article className="pt-28 pb-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <Link href="/#news" className="flex w-fit items-center gap-2 text-sm text-muted-foreground hover:text-navy-900">
