@@ -9,9 +9,11 @@ import { Logo } from "@/components/site/logo";
 import { NAV_ITEMS } from "@/components/site/nav-items";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { telHref } from "@/lib/phone";
 import { cn } from "@/lib/utils";
 
-export function SiteHeader({ hotline, solid = false }: { hotline: string; solid?: boolean }) {
+export function SiteHeader({ hotlines, solid = false }: { hotlines: string[]; solid?: boolean }) {
+  const [hotline] = hotlines;
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(solid);
   const [hidden, setHidden] = useState(false);
@@ -81,7 +83,7 @@ export function SiteHeader({ hotline, solid = false }: { hotline: string; solid?
 
         <div className="flex items-center gap-2">
           <a
-            href={`tel:${hotline.replace(/\s/g, "")}`}
+            href={telHref(hotline)}
             className="hidden items-center gap-2 text-sm font-semibold text-gold-200 transition-colors hover:text-gold-100 xl:flex"
           >
             <Phone className="size-4" /> {hotline}
@@ -127,9 +129,11 @@ export function SiteHeader({ hotline, solid = false }: { hotline: string; solid?
                   </ul>
                 </AnimatePresence>
                 <div className="mt-auto space-y-3">
-                  <a href={`tel:${hotline.replace(/\s/g, "")}`} className="flex items-center gap-3 text-gold-200">
-                    <Phone className="size-5" /> {hotline}
-                  </a>
+                  {hotlines.map((h) => (
+                    <a key={h} href={telHref(h)} className="flex min-h-11 items-center gap-3 text-gold-200">
+                      <Phone className="size-5" /> {h}
+                    </a>
+                  ))}
                   <SheetClose
                     nativeButton={false}
                     render={<Link href="/#contact" />}

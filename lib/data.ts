@@ -46,6 +46,7 @@ export const company = {
 
 export const defaultSettings: SiteSettings = {
   hotline: "0912 623 887",
+  hotline2: "0931 421 989",
   zalo: "0912623887",
   email: "thietkeanyhome@gmail.com",
   website: "www.anyhome.com.vn",

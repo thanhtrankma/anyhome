@@ -14,6 +14,7 @@ export type EquipmentInput = z.infer<typeof equipmentSchema>;
 
 export const settingsSchema = z.object({
   hotline: z.string().trim().min(8, "Hotline không hợp lệ"),
+  hotline2: z.union([z.literal(""), z.string().trim().min(8, "Hotline không hợp lệ")]),
   zalo: z.string().trim().regex(/^\d{9,11}$/, "Chỉ nhập số điện thoại Zalo"),
   email: z.email("Email không hợp lệ"),
   officeAddress: z.string().trim().min(10),

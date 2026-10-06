@@ -15,7 +15,8 @@ import { settingsSchema, type SettingsInput } from "@/lib/validations/settings";
 
 const CONTACT_FIELDS: { name: Exclude<keyof SettingsInput, "stats">; label: string; full?: boolean }[] = [
   { name: "hotline", label: "Hotline" },
-  { name: "zalo", label: "Số Zalo" },
+  { name: "hotline2", label: "Hotline 2 (không bắt buộc)" },
+  { name: "zalo", label: "Số Zalo", full: true },
   { name: "email", label: "Email nhận liên hệ", full: true },
   { name: "officeAddress", label: "Văn phòng Hà Nội", full: true },
   { name: "branchAddress", label: "Chi nhánh Hải Phòng", full: true },

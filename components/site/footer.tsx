@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Logo } from "@/components/site/logo";
 import { NAV_ITEMS } from "@/components/site/nav-items";
 import { company } from "@/lib/data";
+import { getHotlines, telHref } from "@/lib/phone";
 import type { SiteSettings } from "@/lib/types";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
@@ -67,9 +68,16 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
             </li>
             <li className="flex gap-3">
               <Phone className="size-4 shrink-0 text-gold-300" />
-              <a href={`tel:${settings.hotline.replace(/\s/g, "")}`} className="hover:text-gold-200">
-                {settings.hotline}
-              </a>
+              <span className="flex flex-wrap gap-x-3 gap-y-1">
+                {getHotlines(settings).map((h, i) => (
+                  <span key={h} className="flex gap-3">
+                    {i > 0 && <span className="text-navy-400" aria-hidden>·</span>}
+                    <a href={telHref(h)} className="hover:text-gold-200">
+                      {h}
+                    </a>
+                  </span>
+                ))}
+              </span>
             </li>
             <li className="flex gap-3">
               <Mail className="size-4 shrink-0 text-gold-300" />

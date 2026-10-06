@@ -14,6 +14,7 @@ export default function AdminSettingsPage() {
         <SettingsForm
           defaultValues={{
             hotline: settings.hotline,
+            hotline2: settings.hotline2 ?? "",
             zalo: settings.zalo,
             email: settings.email,
             officeAddress: settings.officeAddress,

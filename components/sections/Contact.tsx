@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { submitLead } from "@/lib/actions/leads";
 import { leadProjectTypeLabels } from "@/lib/data";
+import { getHotlines, telHref } from "@/lib/phone";
 import type { SiteSettings } from "@/lib/types";
 import { BUDGET_OPTIONS, leadSchema, type LeadFormValues, type LeadInput } from "@/lib/validations/lead";
 
@@ -65,7 +66,6 @@ export function Contact({ settings }: { settings: SiteSettings }) {
     (_errors, event) => focusErrorSummary(event?.target),
   );
 
-  const tel = settings.hotline.replace(/\s/g, "");
 
   return (
     <section id="contact" className="relative overflow-hidden bg-navy-950 py-14 text-white sm:py-24 lg:py-32">
@@ -80,15 +80,19 @@ export function Contact({ settings }: { settings: SiteSettings }) {
           />
 
           <Reveal className="mt-6 space-y-5 sm:mt-10">
-            <a href={`tel:${tel}`} className="group flex items-center gap-4">
-              <span className="grid size-12 place-items-center rounded-full bg-gold-300 text-navy-900 transition-transform group-hover:scale-110">
+            <div className="flex items-start gap-4">
+              <span className="grid size-12 shrink-0 place-items-center rounded-full bg-gold-300 text-navy-900">
                 <Phone className="size-5" />
               </span>
-              <span>
+              <div>
                 <span className="block text-xs tracking-widest text-navy-300 uppercase">Hotline 24/7</span>
-                <span className="text-2xl font-bold text-gold-200">{settings.hotline}</span>
-              </span>
-            </a>
+                {getHotlines(settings).map((h) => (
+                  <a key={h} href={telHref(h)} className="block text-2xl leading-snug font-bold text-gold-200 transition-colors hover:text-gold-100">
+                    {h}
+                  </a>
+                ))}
+              </div>
+            </div>
             <ul className="hidden space-y-4 text-sm text-navy-100 sm:block">
               <li className="flex gap-3">
                 <Mail className="size-5 shrink-0 text-gold-300" />

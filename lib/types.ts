@@ -80,6 +80,8 @@ export interface Stat {
 
 export interface SiteSettings {
   hotline: string;
+  /** Số hotline phụ — để trống nếu không dùng */
+  hotline2: string;
   zalo: string;
   email: string;
   website: string;

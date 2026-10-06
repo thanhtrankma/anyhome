@@ -45,7 +45,10 @@ const seed = (): Database =>
 function load(): Database {
   if (!existsSync(DB_FILE)) return seed();
   try {
-    return { ...seed(), ...(JSON.parse(readFileSync(DB_FILE, "utf8")) as Partial<Database>) };
+    const base = seed();
+    const saved = JSON.parse(readFileSync(DB_FILE, "utf8")) as Partial<Database>;
+    // Gộp sâu settings để trường mới thêm sau (vd. hotline2) vẫn có giá trị mặc định
+    return { ...base, ...saved, settings: { ...base.settings, ...saved.settings } };
   } catch {
     return seed();
   }
