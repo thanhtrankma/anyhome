@@ -29,7 +29,7 @@ export default async function PostPage({ params }: PageProps<"/tin-tuc/[slug]">)
             <ArrowLeft className="size-4" /> Tin tức
           </Link>
           <Badge className="mt-6 bg-gold-100 text-gold-800">{postCategoryLabels[post.category]}</Badge>
-          <h1 className="mt-4 text-3xl leading-tight font-bold text-navy-900 sm:text-4xl">{post.title}</h1>
+          <h1 className="mt-4 font-serif text-4xl leading-[1.08] font-semibold text-navy-900 sm:text-5xl">{post.title}</h1>
           <p className="mt-4 text-sm text-muted-foreground">
             {post.author} · {post.publishedAt && new Date(post.publishedAt).toLocaleDateString("vi-VN")}
           </p>

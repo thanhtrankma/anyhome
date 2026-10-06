@@ -3,7 +3,7 @@
 import { Menu, Phone } from "lucide-react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Logo } from "@/components/site/logo";
 import { NAV_ITEMS } from "@/components/site/nav-items";
@@ -15,20 +15,46 @@ export function SiteHeader({ hotline, solid = false }: { hotline: string; solid?
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(solid);
   const [hidden, setHidden] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const chipsRef = useRef<HTMLDivElement>(null);
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
     setScrolled(solid || y > 40);
-    // Ẩn khi cuộn xuống nhanh, hiện lại khi cuộn lên
-    setHidden(y > 600 && y > prev + 4);
+    setPastHero(y > window.innerHeight * 0.6);
+    // Desktop: ẩn khi cuộn xuống nhanh. Mobile: luôn hiện vì chứa thanh mục lục nhanh
+    setHidden(window.innerWidth >= 1024 && y > 600 && y > prev + 4);
   });
 
+  // Scrollspy: đánh dấu mục đang nằm giữa màn hình
+  useEffect(() => {
+    const sections = NAV_ITEMS.map((n) => document.getElementById(n.href.split("#")[1])).filter((el): el is HTMLElement => !!el);
+    if (!sections.length) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && setActiveId(e.target.id)),
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    sections.forEach((s) => io.observe(s));
+    return () => io.disconnect();
+  }, []);
+
+  // Giữ chip đang active ở giữa hàng chip. KHÔNG dùng scrollIntoView: nó cuộn cả các
+  // vùng cuộn cha, kể cả visual viewport của trình duyệt → header/bottom bar bị lệch, khuyết.
+  useEffect(() => {
+    const row = chipsRef.current;
+    const chip = row?.querySelector<HTMLElement>('[aria-current="true"]');
+    if (!row || !chip) return;
+    row.scrollTo({ left: chip.offsetLeft - (row.clientWidth - chip.offsetWidth) / 2, behavior: "smooth" });
+  }, [activeId]);
+
   return (
-    <motion.header
-      animate={{ y: hidden ? "-100%" : "0%" }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500",
+        // Không dùng transform thường trực: trên Safari/Chrome di động, phần tử fixed có transform
+        // dễ bị lệch/khuyết khi thanh địa chỉ co giãn lúc cuộn. Chỉ trượt ẩn trên desktop.
+        "fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,box-shadow,backdrop-filter,translate] duration-300",
+        hidden && "-translate-y-full",
         scrolled ? "bg-navy-950/85 shadow-[0_8px_30px_rgba(0,0,0,.25)] backdrop-blur-xl" : "bg-transparent",
       )}
     >
@@ -117,6 +143,39 @@ export function SiteHeader({ hotline, solid = false }: { hotline: string; solid?
           </Sheet>
         </div>
       </div>
-    </motion.header>
+
+      {/* Mobile: mục lục nhanh — nhảy giữa các phần thay vì cuộn dài */}
+      <AnimatePresence initial={false}>
+        {pastHero && (
+          <motion.nav
+            aria-label="Mục lục trang"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden border-t border-white/10 lg:hidden"
+          >
+            <div ref={chipsRef} className="relative flex gap-2 overflow-x-auto overscroll-x-contain px-4 py-2 [scrollbar-width:none]">
+              {NAV_ITEMS.map((item) => {
+                const active = item.href.endsWith(`#${activeId}`);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={active ? "true" : undefined}
+                    className={cn(
+                      "flex h-9 shrink-0 items-center rounded-full px-4 text-[13px] font-medium transition-colors duration-200",
+                      active ? "bg-gold-300 text-navy-900" : "bg-white/10 text-white/85",
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
+    </header>
   );
 }

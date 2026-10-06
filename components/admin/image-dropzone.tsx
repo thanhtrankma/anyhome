@@ -21,6 +21,7 @@ async function upload(file: File) {
 }
 
 type Props = {
+  id?: string;
   label?: string;
   hint?: string;
   invalid?: boolean;
@@ -33,7 +34,7 @@ type Props = {
 
 /** Upload ảnh kéo-thả (1 ảnh hoặc nhiều ảnh), xem trước và xoá. */
 export function ImageDropzone(props: Props) {
-  const { label = "Kéo thả ảnh vào đây", hint = "JPG, PNG, WebP, AVIF · tối đa 8 MB", invalid, className, aspect = "aspect-video" } = props;
+  const { id, label = "Kéo thả ảnh vào đây", hint = "JPG, PNG, WebP, AVIF · tối đa 8 MB", invalid, className, aspect = "aspect-video" } = props;
   const [uploading, setUploading] = useState(0);
   const images = props.multiple ? props.value : props.value ? [props.value] : [];
 
@@ -85,6 +86,7 @@ export function ImageDropzone(props: Props) {
       {showDropzone && (
         <div
           {...getRootProps()}
+          id={id}
           aria-invalid={invalid}
           className={cn(
             "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-8 text-center transition-colors",

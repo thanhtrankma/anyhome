@@ -9,6 +9,13 @@ Next.js 16 (App Router, Server Components, Server Actions, `proxy.ts`) · React 
 shadcn/ui (style `base-nova`, chạy trên Base UI) · Framer Motion · Lucide · react-hook-form + Zod 4 ·
 TanStack Table · Tiptap 3 · react-dropzone · yet-another-react-lightbox · Embla Carousel.
 
+## Design System (ui-ux-pro-max)
+
+Giao diện tuân theo skill [`ui-ux-pro-max`](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
+(cài tại `~/.claude/skills/ui-ux-pro-max`). Nguồn quy chuẩn: [`design-system/anyhome/MASTER.md`](design-system/anyhome/MASTER.md)
+— mục **Anyhome Brand Adaptation** ở đầu file ghi đè đề xuất mặc định của skill (màu thương hiệu navy/vàng,
+font Be Vietnam Pro vì Cinzel không hỗ trợ tiếng Việt) và quy tắc tối ưu mobile.
+
 ## Chạy dự án
 
 ```bash

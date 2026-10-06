@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowDown, ArrowRight, Download } from "lucide-react";
-import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+import { ArrowDown, ArrowRight, Download, Pause, Play } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -23,7 +23,13 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function Hero({ slides, stats, videoUrl }: { slides: HeroSlide[]; stats: Stat[]; videoUrl?: string }) {
   const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
+  // ui-ux-pro-max · auto-rotation-controls: dừng khi hover/focus, có nút tạm dừng,
+  // và không tự chạy khi người dùng bật "giảm chuyển động"
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const paused = hovered || focused || userPaused || !!reduceMotion;
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
@@ -43,11 +49,13 @@ export function Hero({ slides, stats, videoUrl }: { slides: HeroSlide[]; stats: 
       aria-roledescription="carousel"
       aria-label="Giới thiệu Anyhome"
       className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-navy-950 text-white"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={(e) => e.target.matches(":focus-visible") && setFocused(true)}
+      onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setFocused(false)}
     >
       {/* Nền: video (nếu có) hoặc slider ảnh Ken Burns */}
-      <motion.div style={{ y: bgY }} className="absolute inset-0 -z-10">
+      <motion.div style={{ y: bgY }} className="absolute inset-0 -z-10 overflow-hidden">
         {videoUrl ? (
           <video src={videoUrl} autoPlay muted loop playsInline poster={slides[0].image} className="size-full object-cover" />
         ) : (
@@ -81,7 +89,7 @@ export function Hero({ slides, stats, videoUrl }: { slides: HeroSlide[]; stats: 
 
       <motion.div
         style={{ opacity: contentOpacity }}
-        className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 pt-28 pb-12 sm:px-6 lg:px-8"
+        className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12 lg:px-8"
       >
         {/* initial={false}: slide đầu hiển thị ngay từ HTML SSR (tốt cho LCP) */}
         <AnimatePresence mode="wait" initial={false}>
@@ -95,20 +103,20 @@ export function Hero({ slides, stats, videoUrl }: { slides: HeroSlide[]; stats: 
           >
             <motion.p
               variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }}
-              className="mb-6 flex items-center gap-3 text-xs font-semibold tracking-[0.3em] text-gold-300 uppercase sm:text-sm"
+              className="mb-4 flex items-center gap-3 text-xs font-semibold tracking-[0.3em] text-gold-300 uppercase sm:mb-6 sm:text-sm"
             >
               <span className="h-px w-12 bg-gold-300" />
               {slide.eyebrow}
             </motion.p>
             <motion.h1
               variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } } }}
-              className="text-4xl leading-[1.08] font-bold tracking-tight text-balance sm:text-6xl lg:text-7xl"
+              className="text-[clamp(2.25rem,6.5vw,5.25rem)] leading-[1.08] font-bold tracking-tight text-balance"
             >
               {slide.title}
             </motion.h1>
             <motion.p
               variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } } }}
-              className="mt-6 max-w-xl font-serif text-lg text-navy-100/90 italic sm:text-xl"
+              className="mt-4 max-w-xl text-base font-light text-navy-100/90 sm:mt-6 sm:text-xl"
             >
               {slide.caption}
             </motion.p>
@@ -118,8 +126,8 @@ export function Hero({ slides, stats, videoUrl }: { slides: HeroSlide[]; stats: 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.7, ease: EASE }}
-          className="mt-10 flex flex-col gap-3 sm:flex-row"
+          transition={{ delay: 0.2, duration: 0.5, ease: EASE }}
+          className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row"
         >
           <Button
             nativeButton={false}
@@ -142,7 +150,7 @@ export function Hero({ slides, stats, videoUrl }: { slides: HeroSlide[]; stats: 
 
         {/* Điều khiển slider */}
         {!videoUrl && (
-          <div className="mt-12 flex items-center gap-3" role="tablist" aria-label="Chọn slide">
+          <div className="mt-6 flex items-center gap-1 sm:mt-10" role="tablist" aria-label="Chọn slide">
             {slides.map((s, i) => (
               <button
                 key={s.image}
@@ -150,7 +158,7 @@ export function Hero({ slides, stats, videoUrl }: { slides: HeroSlide[]; stats: 
                 aria-selected={i === active}
                 aria-label={`Slide ${i + 1}: ${s.eyebrow}`}
                 onClick={() => setActive(i)}
-                className="group flex items-center gap-2 py-2"
+                className="group flex min-h-11 items-center gap-2 px-1.5"
               >
                 <span className="text-xs font-semibold text-white/50 tabular-nums group-aria-selected:text-gold-300">
                   0{i + 1}
@@ -168,6 +176,16 @@ export function Hero({ slides, stats, videoUrl }: { slides: HeroSlide[]; stats: 
                 </span>
               </button>
             ))}
+            {!reduceMotion && (
+              <button
+                type="button"
+                onClick={() => setUserPaused((p) => !p)}
+                aria-label={userPaused ? "Tiếp tục tự chuyển slide" : "Tạm dừng tự chuyển slide"}
+                className="ml-2 grid size-11 place-items-center rounded-full border border-white/20 text-white/80 transition-colors duration-200 hover:border-gold-300 hover:text-gold-200"
+              >
+                {userPaused ? <Play className="size-4" /> : <Pause className="size-4" />}
+              </button>
+            )}
           </div>
         )}
       </motion.div>
@@ -180,9 +198,9 @@ export function Hero({ slides, stats, videoUrl }: { slides: HeroSlide[]; stats: 
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 + i * 0.1, duration: 0.6 }}
+              transition={{ delay: 0.3 + i * 0.08, duration: 0.5 }}
               className={cn(
-                "flex flex-col-reverse gap-1 py-6 sm:py-8",
+                "flex flex-col-reverse gap-1 py-4 sm:py-8",
                 i % 2 === 1 && "border-l border-white/10 pl-5 sm:pl-8",
                 i >= 2 && "border-t border-white/10 lg:border-t-0",
                 i > 0 && "lg:border-l lg:border-white/10 lg:pl-8",

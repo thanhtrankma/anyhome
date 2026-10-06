@@ -14,7 +14,7 @@ export function SiteShell({
   solidHeader?: boolean;
 }) {
   return (
-    <div className="theme-light bg-background text-foreground">
+    <div className="theme-light overflow-x-clip bg-background text-foreground">
       <SiteHeader hotline={settings.hotline} solid={solidHeader} />
       <main>{children}</main>
       <SiteFooter settings={settings} />

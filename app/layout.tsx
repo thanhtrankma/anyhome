@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Be_Vietnam_Pro, Playfair_Display } from "next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 
+import { MotionProvider } from "@/components/motion-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,17 +9,11 @@ import { company } from "@/lib/data";
 
 import "./globals.css";
 
+// ui-ux-pro-max · pairing "Vietnamese Friendly": Be Vietnam Pro được thiết kế riêng cho dấu tiếng Việt
 const beVietnam = Be_Vietnam_Pro({
   variable: "--font-be-vietnam",
   subsets: ["latin", "vietnamese"],
   weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin", "vietnamese"],
-  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -41,14 +36,18 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#151a2e",
+  // Cho phép dùng env(safe-area-inset-*) để header/bottom bar không bị tai thỏ & home indicator che
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="vi" suppressHydrationWarning className={`${beVietnam.variable} ${playfair.variable} antialiased`}>
+    <html lang="vi" suppressHydrationWarning className={`${beVietnam.variable} antialiased`}>
       <body className="min-h-dvh">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <TooltipProvider>{children}</TooltipProvider>
+          <MotionProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+          </MotionProvider>
           <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>

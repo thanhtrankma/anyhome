@@ -9,6 +9,7 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { ImageDropzone } from "@/components/admin/image-dropzone";
+import { FormErrorSummary, focusErrorSummary } from "@/components/form-error-summary";
 import { PublishBadge } from "@/components/admin/status-badge";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +46,9 @@ export function PostForm({ post }: { post?: Post }) {
         }
       : postDefaults,
     mode: "onTouched",
+    shouldFocusError: false,
   });
+
 
   const status = form.watch("status");
   const slug = form.watch("slug");
@@ -67,7 +70,7 @@ export function PostForm({ post }: { post?: Post }) {
         }),
       () => {
         form.setValue("status", previousStatus);
-        toast.error("Vui lòng kiểm tra lại các trường bị lỗi");
+        focusErrorSummary();
       },
     )();
   };
@@ -113,6 +116,22 @@ export function PostForm({ post }: { post?: Post }) {
           </Button>
         </div>
       </div>
+
+      {form.formState.submitCount > 0 && (
+        <FormErrorSummary
+          className="mb-6"
+          errors={form.formState.errors}
+          fields={{
+            title: ["Tiêu đề", "post-title"],
+            slug: ["Đường dẫn", "post-slug"],
+            excerpt: ["Mô tả ngắn", "post-excerpt"],
+            content: ["Nội dung", "post-content"],
+            tags: ["Thẻ", "post-tags"],
+            author: ["Tác giả", "post-author"],
+            cover: ["Ảnh đại diện", "post-cover"],
+          }}
+        />
+      )}
 
       <div className="grid gap-6 xl:grid-cols-[1fr_340px]">
         {/* Nội dung chính — overflow-visible để toolbar editor bám dính khi cuộn */}
@@ -174,7 +193,7 @@ export function PostForm({ post }: { post?: Post }) {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel>Nội dung *</FieldLabel>
-                    <RichTextEditor value={field.value} onChange={field.onChange} onBlur={field.onBlur} invalid={fieldState.invalid} />
+                    <RichTextEditor id="post-content" value={field.value} onChange={field.onChange} onBlur={field.onBlur} invalid={fieldState.invalid} />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -301,7 +320,7 @@ export function PostForm({ post }: { post?: Post }) {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <ImageDropzone value={field.value} onChange={(v) => field.onChange(v)} invalid={fieldState.invalid} aspect="aspect-[3/2]" />
+                    <ImageDropzone id="post-cover" value={field.value} onChange={(v) => field.onChange(v)} invalid={fieldState.invalid} aspect="aspect-[3/2]" />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}

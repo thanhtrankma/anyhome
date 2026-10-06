@@ -49,7 +49,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-be-vietnam);
-  --font-serif: var(--font-playfair);
+  --font-serif: var(--font-be-vietnam);
   --font-heading: var(--font-be-vietnam);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -169,13 +169,95 @@
   html {
     @apply font-sans scroll-smooth;
     scroll-padding-top: 5rem;
+    /* Chặn kéo ngang toàn trang trên mobile. `clip` không tạo scroll container
+       nên không ảnh hưởng position: sticky / sự kiện cuộn của window. */
+    overflow-x: hidden;
+  }
+  @supports (overflow: clip) {
+    html,
+    body {
+      overflow-x: clip;
+    }
   }
   body {
     @apply bg-background text-foreground;
   }
+
+  /* ui-ux-pro-max · cursor-pointer: Tailwind v4 không còn đặt pointer cho button */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"],
+  [role="slider"],
+  label[for],
+  summary {
+    cursor: pointer;
+  }
+
+  /* ui-ux-pro-max · focus-states: vòng focus thương hiệu cho phần tử chưa tự định nghĩa
+     (:where → specificity 0, các component shadcn có outline-none + ring vẫn giữ style riêng) */
+  :where(a, button, [role="tab"], [role="button"], [tabindex]):focus-visible {
+    outline: 2px solid var(--color-gold-400);
+    outline-offset: 3px;
+  }
+}
+
+/* ui-ux-pro-max · focus-not-obscured: chừa chỗ cho thanh liên hệ ghim đáy trên mobile */
+@media (max-width: 767px) {
+  html {
+    scroll-padding-top: 7.5rem;
+    scroll-padding-bottom: 5.5rem;
+  }
 }
 
 @layer components {
+  /* Băng trượt ngang trên mobile (snap), trở lại thành lưới từ md trở lên.
+     Dùng kèm md:grid-cols-* để đặt số cột desktop. */
+  .rail {
+    display: flex;
+    gap: 0.875rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1rem;
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rail > * {
+    flex: 0 0 82%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+  .rail.rail-narrow > * {
+    flex-basis: 66%;
+  }
+  .rail.rail-xs > * {
+    flex-basis: 38%;
+  }
+  @media (min-width: 640px) {
+    .rail { margin-inline: -1.5rem; padding-inline: 1.5rem; scroll-padding-inline: 1.5rem; }
+    .rail > * { flex-basis: 46%; }
+    .rail.rail-xs > * { flex-basis: 30%; }
+  }
+  @media (min-width: 768px) {
+    .rail {
+      display: grid;
+      overflow: visible;
+      margin-inline: 0;
+      padding-inline: 0;
+      padding-bottom: 0;
+    }
+    .rail > *,
+    .rail.rail-narrow > *,
+    .rail.rail-xs > * {
+      flex: none;
+    }
+  }
+
   /* Rich text output (Tiptap editor + bài viết công khai) */
   .prose-anyhome {
     @apply text-[15px] leading-7 text-foreground/90;
@@ -186,7 +268,7 @@
   .prose-anyhome :where(ul) { @apply my-3 list-disc pl-6; }
   .prose-anyhome :where(ol) { @apply my-3 list-decimal pl-6; }
   .prose-anyhome :where(blockquote) { @apply my-4 border-l-4 border-gold-400 bg-muted/60 py-2 pl-4 italic; }
-  .prose-anyhome :where(a) { @apply text-gold-600 underline underline-offset-4; }
+  .prose-anyhome :where(a) { @apply text-gold-700 underline underline-offset-4; }
   .prose-anyhome :where(img) { @apply my-5 rounded-lg; }
   .prose-anyhome :where(iframe) { @apply my-5 aspect-video h-auto w-full rounded-lg; }
   .prose-anyhome :where(strong) { @apply font-semibold text-foreground; }

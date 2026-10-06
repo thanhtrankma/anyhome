@@ -98,6 +98,7 @@ export function SectionHeading({
   description,
   align = "left",
   tone = "dark",
+  compact = false,
   className,
 }: {
   eyebrow: string;
@@ -105,14 +106,16 @@ export function SectionHeading({
   description?: string;
   align?: "left" | "center";
   tone?: "dark" | "light";
+  /** Tiêu đề phụ: nhỏ hơn và ẩn mô tả trên mobile để trang ngắn lại */
+  compact?: boolean;
   className?: string;
 }) {
   return (
     <Reveal className={cn("max-w-2xl", align === "center" && "mx-auto text-center", className)}>
       <p
         className={cn(
-          "mb-4 flex items-center gap-3 text-xs font-semibold tracking-[0.25em] uppercase",
-          tone === "dark" ? "text-gold-600" : "text-gold-300",
+          "mb-3 flex items-center gap-3 text-xs font-semibold tracking-[0.25em] uppercase sm:mb-4",
+          tone === "dark" ? "text-gold-700" : "text-gold-300",
           align === "center" && "justify-center",
         )}
       >
@@ -121,14 +124,15 @@ export function SectionHeading({
       </p>
       <h2
         className={cn(
-          "text-3xl leading-tight font-bold tracking-tight text-balance sm:text-4xl lg:text-[2.75rem]",
+          "leading-[1.15] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl lg:leading-[1.1]",
+          compact ? "text-2xl" : "text-[1.75rem]",
           tone === "dark" ? "text-navy-900" : "text-white",
         )}
       >
         {title}
       </h2>
       {description && (
-        <p className={cn("mt-5 text-base leading-relaxed text-pretty", tone === "dark" ? "text-muted-foreground" : "text-navy-100/80")}>
+        <p className={cn("mt-3 text-[15px] leading-relaxed text-pretty sm:mt-5 sm:text-base", compact && "max-sm:hidden", tone === "dark" ? "text-muted-foreground" : "text-navy-100/80")}>
           {description}
         </p>
       )}

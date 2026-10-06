@@ -35,6 +35,7 @@ import { uploadImage } from "@/lib/actions/upload";
 import { cn } from "@/lib/utils";
 
 interface RichTextEditorProps {
+  id?: string;
   value: string;
   onChange: (html: string) => void;
   onBlur?: () => void;
@@ -64,7 +65,7 @@ const EMPTY_STATE = {
  * Trình soạn thảo Tiptap: định dạng văn bản, chèn ảnh công trình
  * (upload trực tiếp hoặc kéo-thả/dán vào khung soạn thảo) và video YouTube.
  */
-export function RichTextEditor({ value, onChange, onBlur, invalid, placeholder = "Bắt đầu viết nội dung…" }: RichTextEditorProps) {
+export function RichTextEditor({ id, value, onChange, onBlur, invalid, placeholder = "Bắt đầu viết nội dung…" }: RichTextEditorProps) {
   const fileInputId = useId();
   // editorProps chỉ được đọc 1 lần khi khởi tạo → dùng ref để handler luôn thấy editor hiện tại
   const editorRef = useRef<Editor | null>(null);
@@ -198,7 +199,7 @@ export function RichTextEditor({ value, onChange, onBlur, invalid, placeholder =
   ];
 
   return (
-    <div className={cn("rounded-lg border bg-background focus-within:ring-3 focus-within:ring-ring/40", invalid && "border-destructive")}>
+    <div id={id} tabIndex={id ? -1 : undefined} className={cn("rounded-lg border bg-background outline-none focus-within:ring-3 focus-within:ring-ring/40", invalid && "border-destructive")}>
       <div role="toolbar" aria-label="Định dạng" className="sticky top-16 z-10 flex flex-wrap items-center gap-0.5 rounded-t-lg border-b bg-muted/90 p-1.5 backdrop-blur">
         {tools.map((t, i) =>
           t === "sep" ? (

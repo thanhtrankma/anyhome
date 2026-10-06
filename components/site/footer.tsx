@@ -8,12 +8,12 @@ import type { SiteSettings } from "@/lib/types";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
   return (
-    <footer className="relative overflow-hidden bg-navy-950 pb-24 text-navy-200 md:pb-0">
-      <div className="pointer-events-none absolute -top-40 -right-40 size-[480px] rotate-45 bg-gold-300/5" />
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.4fr_1fr_1.2fr] lg:px-8">
+    <footer className="relative overflow-hidden bg-navy-950 pb-20 text-navy-200 md:pb-0">
+      <div className="pointer-events-none absolute -top-40 -right-40 hidden size-[480px] rotate-45 bg-gold-300/5 md:block" aria-hidden />
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:gap-12 sm:px-6 sm:py-16 lg:grid-cols-[1.4fr_1fr_1.2fr] lg:px-8">
         <div>
           <Logo />
-          <p className="mt-6 max-w-sm text-sm leading-relaxed text-navy-200/80">{company.tagline}</p>
+          <p className="mt-6 hidden max-w-sm text-sm leading-relaxed text-navy-200/80 sm:block">{company.tagline}</p>
           <dl className="mt-6 space-y-1 text-xs text-navy-300">
             <div>
               <dt className="inline">Tên công ty: </dt>
@@ -30,7 +30,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           </dl>
         </div>
 
-        <nav aria-label="Liên kết chân trang">
+        <nav aria-label="Liên kết chân trang" className="hidden md:block">
           <h3 className="mb-5 text-sm font-semibold tracking-widest text-gold-300 uppercase">Khám phá</h3>
           <ul className="space-y-3 text-sm">
             {NAV_ITEMS.map((item) => (
