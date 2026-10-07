@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Loader2, Pencil, Plus, Trash2 } from "lucide-react";
+import { HardHat, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -114,8 +114,8 @@ function EquipmentForm({ equipment, onDone }: { equipment?: Equipment; onDone: (
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel>Ảnh thiết bị *</FieldLabel>
-              <ImageDropzone value={field.value} onChange={field.onChange} invalid={fieldState.invalid} aspect="aspect-[4/3]" />
+              <FieldLabel>Ảnh thiết bị</FieldLabel>
+              <ImageDropzone value={field.value} onChange={field.onChange} invalid={fieldState.invalid} aspect="aspect-[4/3]" hint="Không bắt buộc — để trống sẽ hiện biểu tượng" />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -145,7 +145,7 @@ export function EquipmentsManager({ equipments }: { equipments: Equipment[] }) {
       cell: ({ row }) => (
         <div className="flex min-w-56 items-center gap-3">
           <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-muted">
-            <Image src={row.original.image} alt="" fill sizes="44px" className="object-cover" unoptimized={row.original.image.startsWith("/uploads/")} />
+            {row.original.image ? <Image src={row.original.image} alt="" fill sizes="44px" className="object-cover" /> : <HardHat className="absolute inset-0 m-auto size-5 text-muted-foreground" />}
           </span>
           <div>
             <p className="font-medium">{row.original.name}</p>

@@ -24,12 +24,11 @@ import type {
  * Ảnh công trình của Anyhome trên Supabase Storage (bucket "uploads", thư mục anyhome/).
  * Đánh số theo thứ tự tên file trong bộ ảnh gốc; đã nén tối đa 2000–2400px và xoá EXIF.
  */
-export const photo = (n: string) =>
-  `https://xezsyblbczsbxzvrffut.supabase.co/storage/v1/object/public/uploads/anyhome/${n}.jpg`;
-
-/** Ảnh minh hoạ tạm (Unsplash) — next/image tự chuyển sang AVIF/WebP. */
-export const img = (id: string, w = 1600) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+const STORAGE = "https://xezsyblbczsbxzvrffut.supabase.co/storage/v1/object/public/uploads/anyhome";
+export const photo = (n: string) => `${STORAGE}/${n}.jpg`;
+/** Logo tròn (PNG nền trong suốt) và favicon — cũng là ảnh tạm cho dự án chưa có ảnh */
+export const LOGO = `${STORAGE}/logo.png`;
+export const FAVICON = `${STORAGE}/favicon.png`;
 
 /* ───────────────────────────── Công ty ───────────────────────────── */
 
@@ -265,20 +264,21 @@ export const equipmentGroupLabels: Record<EquipmentGroup, string> = {
   workshop: "Xưởng sản xuất nội thất",
 };
 
-// MẪU — profile chưa có danh mục thiết bị chi tiết, cập nhật trong /admin/equipments
+// MẪU — profile chưa có danh mục thiết bị chi tiết, cập nhật trong /admin/equipments.
+// Chưa có ảnh thật → để trống, website hiện biểu tượng theo nhóm thiết bị.
 export const equipments: Equipment[] = [
-  { id: "eq-1", name: "Máy xúc bánh xích", group: "machinery", spec: "Gầu 0,7 – 1,2 m³", quantity: 3, unit: "chiếc", origin: "Nhật Bản", image: img("1517089596392-fb9a9033e05b", 900) },
-  { id: "eq-2", name: "Cần trục tháp", group: "machinery", spec: "Sức nâng 6 – 8 tấn, tầm với 50 m", quantity: 2, unit: "bộ", origin: "Trung Quốc", image: img("1565008447742-97f6f38c985c", 900) },
-  { id: "eq-3", name: "Máy trộn & bơm bê tông", group: "machinery", spec: "Công suất 30 – 60 m³/h", quantity: 4, unit: "bộ", origin: "Hàn Quốc", image: img("1541888946425-d81bb19240f5", 900) },
-  { id: "eq-4", name: "Máy đầm dùi, đầm bàn", group: "machinery", spec: "1,5 – 2,2 kW", quantity: 20, unit: "chiếc", origin: "Nhật Bản", image: img("1504307651254-35680f356dfd", 900) },
-  { id: "eq-5", name: "Cốp pha nhôm định hình", group: "formwork", spec: "Hệ sàn + vách, luân chuyển 200+ lần", quantity: 1800, unit: "m²", origin: "Việt Nam", image: img("1590496793929-36417d3117de", 900) },
-  { id: "eq-6", name: "Cốp pha thép & ván phủ phim", group: "formwork", spec: "Dầm, cột, sàn", quantity: 2500, unit: "m²", origin: "Việt Nam", image: img("1621905252507-b35492cc74b4", 900) },
-  { id: "eq-7", name: "Giàn giáo nêm, giáo chống tổ hợp", group: "formwork", spec: "Chiều cao lắp dựng tới 30 m", quantity: 3000, unit: "bộ", origin: "Việt Nam", image: img("1565008447742-97f6f38c985c", 900) },
-  { id: "eq-8", name: "Máy toàn đạc điện tử", group: "survey", spec: "Độ chính xác góc 2″", quantity: 2, unit: "bộ", origin: "Nhật Bản", image: img("1581092160562-40aa08e78837", 900) },
-  { id: "eq-9", name: "Máy thủy bình, máy laser cân bằng", group: "survey", spec: "Tự động cân bằng", quantity: 6, unit: "bộ", origin: "Đức", image: img("1503387762-592deb58ef4e", 900) },
-  { id: "eq-10", name: "Máy siêu âm & súng bật nẩy bê tông", group: "survey", spec: "Kiểm tra cường độ kết cấu", quantity: 2, unit: "bộ", origin: "Thụy Sĩ", image: img("1504307651254-35680f356dfd", 900) },
-  { id: "eq-11", name: "Máy CNC cắt ván công nghiệp", group: "workshop", spec: "Bàn làm việc 1.300 × 2.500 mm", quantity: 2, unit: "máy", origin: "Đài Loan", image: img("1513828583688-c52646db42da", 900) },
-  { id: "eq-12", name: "Máy dán cạnh tự động, khoan đa trục", group: "workshop", spec: "Dây chuyền gia công tủ bếp, tủ áo", quantity: 3, unit: "máy", origin: "Đài Loan", image: img("1586528116311-ad8dd3c8310d", 900) },
+  { id: "eq-1", name: "Máy xúc bánh xích", group: "machinery", spec: "Gầu 0,7 – 1,2 m³", quantity: 3, unit: "chiếc", origin: "Nhật Bản", image: "" },
+  { id: "eq-2", name: "Cần trục tháp", group: "machinery", spec: "Sức nâng 6 – 8 tấn, tầm với 50 m", quantity: 2, unit: "bộ", origin: "Trung Quốc", image: "" },
+  { id: "eq-3", name: "Máy trộn & bơm bê tông", group: "machinery", spec: "Công suất 30 – 60 m³/h", quantity: 4, unit: "bộ", origin: "Hàn Quốc", image: "" },
+  { id: "eq-4", name: "Máy đầm dùi, đầm bàn", group: "machinery", spec: "1,5 – 2,2 kW", quantity: 20, unit: "chiếc", origin: "Nhật Bản", image: "" },
+  { id: "eq-5", name: "Cốp pha nhôm định hình", group: "formwork", spec: "Hệ sàn + vách, luân chuyển 200+ lần", quantity: 1800, unit: "m²", origin: "Việt Nam", image: "" },
+  { id: "eq-6", name: "Cốp pha thép & ván phủ phim", group: "formwork", spec: "Dầm, cột, sàn", quantity: 2500, unit: "m²", origin: "Việt Nam", image: "" },
+  { id: "eq-7", name: "Giàn giáo nêm, giáo chống tổ hợp", group: "formwork", spec: "Chiều cao lắp dựng tới 30 m", quantity: 3000, unit: "bộ", origin: "Việt Nam", image: photo("67") },
+  { id: "eq-8", name: "Máy toàn đạc điện tử", group: "survey", spec: "Độ chính xác góc 2″", quantity: 2, unit: "bộ", origin: "Nhật Bản", image: "" },
+  { id: "eq-9", name: "Máy thủy bình, máy laser cân bằng", group: "survey", spec: "Tự động cân bằng", quantity: 6, unit: "bộ", origin: "Đức", image: "" },
+  { id: "eq-10", name: "Máy siêu âm & súng bật nẩy bê tông", group: "survey", spec: "Kiểm tra cường độ kết cấu", quantity: 2, unit: "bộ", origin: "Thụy Sĩ", image: "" },
+  { id: "eq-11", name: "Máy CNC cắt ván công nghiệp", group: "workshop", spec: "Bàn làm việc 1.300 × 2.500 mm", quantity: 2, unit: "máy", origin: "Đài Loan", image: "" },
+  { id: "eq-12", name: "Máy dán cạnh tự động, khoan đa trục", group: "workshop", spec: "Dây chuyền gia công tủ bếp, tủ áo", quantity: 3, unit: "máy", origin: "Đài Loan", image: "" },
 ];
 
 /* ─────────────────────────── Dự án ─────────────────────────── */
@@ -289,7 +289,7 @@ export const projectCategoryLabels: Record<ProjectCategory, string> = {
   interior: "Thiết kế & Thi công Nội thất",
 };
 
-type SeedProject = Omit<Project, "id" | "slug" | "status" | "createdAt" | "gallery"> & { gallery?: string[] };
+type SeedProject = Omit<Project, "id" | "slug" | "status" | "createdAt" | "gallery"> & { gallery?: string[]; status?: Project["status"] };
 
 // Tên, địa điểm, phạm vi lấy từ trang 24–38. Quy mô/năm: MẪU.
 const seedProjects: SeedProject[] = [
@@ -316,7 +316,9 @@ const seedProjects: SeedProject[] = [
     client: "Công ty CP Chế tạo Bơm Hải Dương",
     scope: ["Thiết kế", "Thi công"],
     summary: "Cải tạo, mở rộng nhà xưởng sản xuất và thiết kế – thi công hạng mục nhà ăn cho cán bộ công nhân viên.",
-    cover: img("1513828583688-c52646db42da"),
+    cover: LOGO,
+    // Chưa có ảnh công trình → ẩn khỏi website cho tới khi upload ảnh trong /admin/projects
+    status: "draft",
     featured: false,
   },
   {
@@ -493,7 +495,8 @@ const seedProjects: SeedProject[] = [
     year: 2025,
     scope: ["Thiết kế", "Thi công"],
     summary: "Thiết kế và thi công hạng mục kết cấu thép cho tổ hợp chung cư cao tầng.",
-    cover: img("1545324418-cc1a3fa10c00"),
+    cover: photo("69"),
+    gallery: [photo("69"), photo("61")],
     featured: false,
   },
   {
@@ -544,7 +547,9 @@ const seedProjects: SeedProject[] = [
     year: 2024,
     scope: ["Thiết kế", "Thi công"],
     summary: "Không gian café – nhà hàng giữa rừng thông, vật liệu gỗ thông và kính lớn đón sương.",
-    cover: img("1554118811-1e0d58224f24"),
+    cover: LOGO,
+    // Chưa có ảnh công trình → ẩn khỏi website cho tới khi upload ảnh trong /admin/projects
+    status: "draft",
     featured: false,
   },
   {
@@ -556,7 +561,9 @@ const seedProjects: SeedProject[] = [
     year: 2024,
     scope: ["Thiết kế", "Thi công"],
     summary: "Café phong cách industrial – tropical, sân thượng mở và quầy bar trung tâm.",
-    cover: img("1501339847302-ac426a4a7cbb"),
+    cover: LOGO,
+    // Chưa có ảnh công trình → ẩn khỏi website cho tới khi upload ảnh trong /admin/projects
+    status: "draft",
     featured: false,
   },
   {
@@ -568,8 +575,9 @@ const seedProjects: SeedProject[] = [
     year: 2026,
     scope: ["Thiết kế", "Sản xuất", "Thi công"],
     summary: "Căn hộ 3 phòng ngủ tối giản Japandi với gỗ sồi sáng màu và ánh sáng gián tiếp.",
-    cover: img("1618221195710-dd6b41faaea6"),
-    beforeAfter: { render: img("1618221195710-dd6b41faaea6"), real: img("1618221195710-dd6b41faaea6") },
+    cover: LOGO,
+    // Chưa có ảnh công trình → ẩn khỏi website cho tới khi upload ảnh trong /admin/projects
+    status: "draft",
     featured: true,
   },
 ];
@@ -588,7 +596,7 @@ export const projects: Project[] = seedProjects.map((p, i) => ({
   id: `prj-${String(i + 1).padStart(3, "0")}`,
   slug: slugify(p.title),
   gallery: p.gallery ?? [p.cover],
-  status: "published",
+  status: p.status ?? "published",
   createdAt: new Date(Date.UTC(p.year, 5, 1 + i)).toISOString(),
 }));
 

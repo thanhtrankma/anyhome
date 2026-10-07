@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     qualities: [60, 75, 90],
     remotePatterns: [
-      { protocol: "https", hostname: "images.unsplash.com" },
       // Ảnh upload từ /admin (Supabase Storage, bucket "uploads")
       { protocol: "https", hostname: "*.supabase.co", pathname: "/storage/v1/object/public/**" },
     ],

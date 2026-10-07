@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, ClipboardCheck, DraftingCompass, HardHat, Sofa } from "lucide-react";
+import { CheckCircle2, ClipboardCheck, Construction, DraftingCompass, Factory, HardHat, ScanLine, Sofa, Truck } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
@@ -16,6 +16,9 @@ import type { Equipment, EquipmentGroup } from "@/lib/types";
 const serviceIcons = { drafting: DraftingCompass, sofa: Sofa, hardhat: HardHat, clipboard: ClipboardCheck } as const;
 
 type GroupFilter = EquipmentGroup | "all";
+
+/** Thiết bị chưa có ảnh thật → biểu tượng theo nhóm */
+const groupIcons = { machinery: Truck, formwork: Construction, survey: ScanLine, workshop: Factory } as const;
 
 export function Capacity({ equipments, content }: { equipments: Equipment[]; content: SiteContent["capacity"] }) {
   const { services, deliveryCapabilities, workflow } = content;
@@ -127,7 +130,11 @@ export function Capacity({ equipments, content }: { equipments: Equipment[]; con
                   className="group overflow-hidden rounded-xl border border-white/10 bg-navy-900"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <Image src={e.image} alt={e.name} fill sizes="(min-width:1024px) 22vw, (min-width:640px) 45vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                    {e.image ? (
+                      <Image src={e.image} alt={e.name} fill sizes="(min-width:1024px) 22vw, (min-width:640px) 45vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                    ) : (
+                      <EquipmentPlaceholder group={e.group} />
+                    )}
                     <Badge className="absolute top-3 left-3 bg-navy-950/80 text-gold-200 backdrop-blur">{equipmentGroupLabels[e.group]}</Badge>
                   </div>
                   <div className="p-5">
@@ -148,5 +155,18 @@ export function Capacity({ equipments, content }: { equipments: Equipment[]; con
         </div>
       </div>
     </section>
+  );
+}
+
+function EquipmentPlaceholder({ group }: { group: EquipmentGroup }) {
+  const Icon = groupIcons[group] ?? HardHat;
+  return (
+    <div className="absolute inset-0 grid place-items-center bg-linear-to-br from-navy-800 to-navy-950">
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(var(--color-gold-300)_1px,transparent_1px),linear-gradient(90deg,var(--color-gold-300)_1px,transparent_1px)] [background-size:24px_24px]"
+      />
+      <Icon className="relative size-14 text-gold-300/80 transition-transform duration-500 group-hover:scale-110" strokeWidth={1.2} />
+    </div>
   );
 }

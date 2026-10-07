@@ -74,7 +74,8 @@ proxy.ts                   Chuyển /admin về trang đăng nhập khi chưa c�
 
 Các mục đánh dấu `// MẪU` trong `lib/data.ts`:
 
-- **Ảnh**: toàn bộ ảnh công trình/thiết bị đang là ảnh minh hoạ Unsplash; ảnh chứng chỉ là SVG giả lập (`public/certificates/`).
+- **Ảnh**: ảnh công trình là ảnh thật trên Supabase Storage (`uploads/anyhome/`), phần lớn được ghép vào dự án theo phỏng đoán — kiểm tra lại trong `/admin/projects`.
+  4 dự án chưa có ảnh (Bơm Hải Dương, 2 quán café, căn hộ Japandi) đang ẩn; thiết bị chưa có ảnh hiện biểu tượng; ảnh chứng chỉ là SVG giả lập (`public/certificates/`).
 - **Ảnh 3D Render vs Thực tế**: dữ liệu mẫu dùng chung 1 ảnh và mô phỏng "bản render" bằng filter — upload cặp ảnh thật trong `/admin/projects`.
 - **Số liệu**: tổng m² thi công, quy mô/năm hoàn thành từng dự án, danh mục thiết bị — profile gốc không công bố.
 - **Logo đối tác**: đang hiển thị dạng wordmark chữ.

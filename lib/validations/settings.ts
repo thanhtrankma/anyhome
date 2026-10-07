@@ -7,7 +7,8 @@ export const equipmentSchema = z.object({
   quantity: z.number({ error: "Nhập số lượng" }).int().positive("Số lượng phải > 0"),
   unit: z.string().trim().min(1, "Nhập đơn vị").max(12),
   origin: z.string().trim().min(2, "Nhập xuất xứ").max(40),
-  image: z.string().min(1, "Tải lên ảnh thiết bị"),
+  /** Để trống → website hiện biểu tượng theo nhóm thiết bị */
+  image: z.string(),
 });
 
 export type EquipmentInput = z.infer<typeof equipmentSchema>;

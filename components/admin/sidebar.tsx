@@ -31,10 +31,13 @@ export function SidebarNav({
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       <Link href="/admin" onClick={onNavigate} className="flex h-16 shrink-0 items-center gap-3 border-b border-sidebar-border px-5">
         {logo ? (
-          <span className="min-w-0 leading-tight">
-            <LogoImage src={logo} alt="Trang quản trị" className="h-8 max-w-40" />
-            <span className="mt-1 block text-[10px] tracking-widest text-sidebar-primary uppercase">Content Studio</span>
-          </span>
+          <>
+            <LogoImage src={logo} alt="" className="h-11 max-w-40" />
+            <span className="leading-tight">
+              <span className="block text-sm font-extrabold tracking-[0.18em] text-white">ANYHOME</span>
+              <span className="block text-[10px] tracking-widest text-sidebar-primary uppercase">Content Studio</span>
+            </span>
+          </>
         ) : (
           <>
             <LogoMark className="size-8 text-white" />

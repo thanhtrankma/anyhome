@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LoginForm } from "@/components/admin/login-form";
 import { Logo, LogoImage, LogoMark } from "@/components/site/logo";
 import { isAuthConfigured } from "@/lib/auth";
-import { img } from "@/lib/data";
+import { photo } from "@/lib/data";
 import { getSiteContent } from "@/lib/store";
 
 export const metadata = { title: "Đăng nhập" };
@@ -21,7 +21,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/admin/logi
       {/* Panel thương hiệu — chỉ hiện từ lg */}
       <aside className="relative hidden overflow-hidden bg-navy-900 lg:block">
         <Image
-          src={img("1600585154340-be6161a56a0c", 1800)}
+          src={photo("09")}
           alt=""
           fill
           preload
@@ -30,7 +30,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/admin/logi
         />
         <div className="absolute inset-0 bg-linear-to-t from-navy-950 via-navy-900/70 to-navy-900/30" />
         <div className="relative flex h-full flex-col justify-between p-12 text-white">
-          <Logo src={general.logo} alt={general.brand} />
+          <Logo src={general.logo} alt={general.brand} markClassName="h-14" />
           <div className="max-w-md">
             <p className="text-xs font-semibold tracking-[0.25em] text-gold-300 uppercase">Content Studio</p>
             <h2 className="mt-4 text-4xl leading-tight font-bold tracking-tight text-balance">
@@ -54,7 +54,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/admin/logi
 
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-12">
           {lightLogo ? (
-            <LogoImage src={lightLogo} alt={general.brand} className="h-12 lg:hidden" />
+            <LogoImage src={lightLogo} alt={general.brand} className="h-20 lg:hidden" />
           ) : (
             <LogoMark className="size-12 text-navy-800 lg:hidden dark:text-white" />
           )}

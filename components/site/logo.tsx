@@ -34,17 +34,23 @@ export function Logo({
   tone = "light",
   src,
   alt = "Anyhome",
+  markClassName,
 }: {
   className?: string;
   tone?: "light" | "dark";
-  /** Ảnh logo tuỳ chỉnh; trống thì dùng logo SVG mặc định */
+  /** Ảnh logo tuỳ chỉnh (dùng làm biểu tượng cạnh chữ ANYHOME); trống thì dùng logo SVG mặc định */
   src?: string;
   alt?: string;
+  /** Kích thước ảnh logo tuỳ chỉnh, mặc định h-12 */
+  markClassName?: string;
 }) {
-  if (src) return <LogoImage src={src} alt={alt} className={className} />;
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
-      <LogoMark className={tone === "light" ? "text-white" : "text-navy-800"} />
+    <span className={cn("flex items-center gap-3", className)}>
+      {src ? (
+        <LogoImage src={src} alt={alt} className={cn("h-12 shrink-0", markClassName)} />
+      ) : (
+        <LogoMark className={tone === "light" ? "text-white" : "text-navy-800"} />
+      )}
       <span className="flex flex-col leading-none">
         <span
           className={cn(
