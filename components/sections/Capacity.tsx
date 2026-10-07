@@ -7,7 +7,6 @@ import { useState } from "react";
 
 import { RailHint } from "@/components/site/mobile-ui";
 import { Reveal, SectionHeading, StaggerGroup, StaggerItem } from "@/components/site/motion";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SiteContent } from "@/lib/content";
 import { equipmentGroupLabels } from "@/lib/data";
@@ -100,73 +99,65 @@ export function Capacity({ equipments, content }: { equipments: Equipment[]; con
 
         {/* Danh mục thiết bị */}
         <div className="mt-14 sm:mt-24">
-          <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-            <SectionHeading compact tone="light" eyebrow="Máy móc & Thiết bị" title={content.equipmentTitle} />
-            <Tabs value={group} onValueChange={(v) => setGroup(v as GroupFilter)}>
-              <TabsList className="-mx-4 w-[calc(100%+2rem)] justify-start gap-1 overflow-x-auto rounded-none bg-transparent px-4 [scrollbar-width:none] group-data-horizontal/tabs:h-auto sm:mx-0 sm:w-fit sm:flex-wrap sm:rounded-full sm:bg-white/5 sm:p-1">
-                {(["all", ...Object.keys(equipmentGroupLabels)] as GroupFilter[]).map((g) => (
-                  <TabsTrigger
-                    key={g}
-                    value={g}
-                    className="h-10 flex-none rounded-full border border-white/10 px-4 text-navy-100 hover:text-white data-active:border-gold-300 data-active:bg-gold-300 data-active:text-navy-900 sm:h-9 sm:border-0"
-                  >
-                    {g === "all" ? "Tất cả" : equipmentGroupLabels[g]}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-          </div>
-
-          <motion.div layout className="rail rail-narrow mt-6 sm:mt-10 md:grid-cols-3 md:gap-5 lg:grid-cols-4">
-            <AnimatePresence mode="popLayout">
-              {visible.map((e) => (
-                <motion.article
-                  layout
-                  key={e.id}
-                  initial={{ opacity: 0, scale: 0.94 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.94 }}
-                  transition={{ duration: 0.35 }}
-                  className="group overflow-hidden rounded-xl border border-white/10 bg-navy-900"
+          <SectionHeading compact tone="light" eyebrow="Máy móc & Thiết bị" title={content.equipmentTitle} />
+          <Tabs value={group} onValueChange={(v) => setGroup(v as GroupFilter)} className="mt-6 sm:mt-8">
+            {/* Không xuống dòng: thiếu chỗ thì cuộn ngang thay vì vỡ khung bo tròn */}
+            <TabsList className="-mx-4 w-[calc(100%+2rem)] justify-start gap-1 overflow-x-auto rounded-none bg-transparent px-4 [scrollbar-width:none] group-data-horizontal/tabs:h-auto sm:mx-0 sm:w-fit sm:max-w-full sm:rounded-full sm:bg-white/5 sm:p-1">
+              {(["all", ...Object.keys(equipmentGroupLabels)] as GroupFilter[]).map((g) => (
+                <TabsTrigger
+                  key={g}
+                  value={g}
+                  className="h-10 flex-none rounded-full border border-white/10 px-4 whitespace-nowrap text-navy-100 hover:text-white data-active:border-gold-300 data-active:bg-gold-300 data-active:text-navy-900 sm:h-9 sm:border-0"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    {e.image ? (
-                      <Image src={e.image} alt={e.name} fill sizes="(min-width:1024px) 22vw, (min-width:640px) 45vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-110" />
-                    ) : (
-                      <EquipmentPlaceholder group={e.group} />
-                    )}
-                    <Badge className="absolute top-3 left-3 bg-navy-950/80 text-gold-200 backdrop-blur">{equipmentGroupLabels[e.group]}</Badge>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-semibold">{e.name}</h3>
-                    <p className="mt-1 text-sm text-navy-200">{e.spec}</p>
-                    <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3 text-xs text-navy-300">
-                      <span>
-                        <strong className="text-base text-gold-300">{e.quantity.toLocaleString("vi-VN")}</strong> {e.unit}
-                      </span>
-                      <span>Xuất xứ: {e.origin}</span>
-                    </div>
-                  </div>
-                </motion.article>
+                  {g === "all" ? "Tất cả" : equipmentGroupLabels[g]}
+                  <span className="ml-1.5 text-xs opacity-60 tabular-nums">
+                    {g === "all" ? equipments.length : equipments.filter((e) => e.group === g).length}
+                  </span>
+                </TabsTrigger>
               ))}
+            </TabsList>
+          </Tabs>
+
+          <motion.ul layout className="rail mt-6 sm:mt-8 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+            <AnimatePresence mode="popLayout">
+              {visible.map((e) => {
+                const Icon = groupIcons[e.group] ?? HardHat;
+                return (
+                  <motion.li
+                    layout
+                    key={e.id}
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.3 }}
+                    className="group flex gap-4 rounded-xl border border-white/10 bg-navy-900/80 p-4 transition-colors duration-300 hover:border-gold-300/40 hover:bg-navy-900"
+                  >
+                    <div className="relative grid size-16 shrink-0 sm:size-20 place-items-center overflow-hidden rounded-lg border border-white/10 bg-linear-to-br from-navy-800 to-navy-950">
+                      {e.image ? (
+                        <Image src={e.image} alt={e.name} fill sizes="80px" className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                      ) : (
+                        <Icon className="size-7 text-gold-300/80 sm:size-8" strokeWidth={1.3} aria-hidden />
+                      )}
+                    </div>
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <p className="text-[11px] font-medium tracking-wide text-gold-300/80 uppercase">{equipmentGroupLabels[e.group]}</p>
+                      <h3 className="mt-0.5 leading-snug font-semibold">{e.name}</h3>
+                      <p className="mt-0.5 text-sm text-navy-200">{e.spec}</p>
+                      <div className="mt-auto flex items-baseline justify-between gap-3 pt-2 text-xs text-navy-300">
+                        <span>
+                          <strong className="text-base text-gold-300 tabular-nums">{e.quantity.toLocaleString("vi-VN")}</strong> {e.unit}
+                        </span>
+                        <span className="truncate">Xuất xứ: {e.origin}</span>
+                      </div>
+                    </div>
+                  </motion.li>
+                );
+              })}
             </AnimatePresence>
-          </motion.div>
+          </motion.ul>
           <RailHint count={visible.length} tone="light" />
         </div>
       </div>
     </section>
-  );
-}
-
-function EquipmentPlaceholder({ group }: { group: EquipmentGroup }) {
-  const Icon = groupIcons[group] ?? HardHat;
-  return (
-    <div className="absolute inset-0 grid place-items-center bg-linear-to-br from-navy-800 to-navy-950">
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(var(--color-gold-300)_1px,transparent_1px),linear-gradient(90deg,var(--color-gold-300)_1px,transparent_1px)] [background-size:24px_24px]"
-      />
-      <Icon className="relative size-14 text-gold-300/80 transition-transform duration-500 group-hover:scale-110" strokeWidth={1.2} />
-    </div>
   );
 }
