@@ -31,6 +31,10 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: general.brand,
       images: general.ogImage ? [general.ogImage] : undefined,
     },
+    // Favicon chỉnh trong /admin/settings/general; không đặt thì dùng public/favicon.ico
+    icons: general.favicon
+      ? { icon: general.favicon, shortcut: general.favicon, apple: general.favicon }
+      : { icon: "/favicon.ico" },
   };
 }
 

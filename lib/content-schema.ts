@@ -27,6 +27,7 @@ export interface SiteContent {
     seoTitle: string;
     seoDescription: string;
     ogImage: string;
+    favicon: string;
     facebookUrl: string;
     youtubeUrl: string;
     tiktokUrl: string;
@@ -181,6 +182,18 @@ export const contentGroups: ContentGroup[] = [
           { name: "seoTitle", label: "Tiêu đề trang chủ (SEO title)", type: "text", help: "Nên dưới 60 ký tự" },
           { name: "seoDescription", label: "Mô tả (SEO description)", type: "textarea", help: "Nên 120–160 ký tự" },
           { name: "ogImage", label: "Ảnh chia sẻ mạng xã hội (OG image)", type: "image", help: "Tỉ lệ 1200 × 630" },
+        ],
+      },
+      {
+        title: "Favicon",
+        description: "Biểu tượng nhỏ trên tab trình duyệt, kết quả Google và khi lưu website ra màn hình điện thoại.",
+        fields: [
+          {
+            name: "favicon",
+            label: "Ảnh favicon",
+            type: "image",
+            help: "Ảnh vuông PNG, tối thiểu 192 × 192 px (nên 512 × 512). File .ico/.svg thì dán link. Để trống sẽ dùng /favicon.ico mặc định.",
+          },
         ],
       },
       {

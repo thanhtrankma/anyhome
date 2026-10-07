@@ -40,6 +40,7 @@ export const defaultContent: SiteContent = {
     seoDescription:
       "Anyhome – Tổng thầu Design & Build: thiết kế kiến trúc, nội thất, sản xuất nội thất và thi công xây dựng trọn gói nhà ở cao cấp, biệt thự, nhà xưởng công nghiệp.",
     ogImage: img("1600585154340-be6161a56a0c", 1200),
+    favicon: "",
     facebookUrl: "",
     youtubeUrl: "",
     tiktokUrl: "",
