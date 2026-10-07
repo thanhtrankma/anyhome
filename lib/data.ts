@@ -20,6 +20,13 @@ import type {
   SiteSettings,
 } from "@/lib/types";
 
+/**
+ * Ảnh công trình của Anyhome trên Supabase Storage (bucket "uploads", thư mục anyhome/).
+ * Đánh số theo thứ tự tên file trong bộ ảnh gốc; đã nén tối đa 2000–2400px và xoá EXIF.
+ */
+export const photo = (n: string) =>
+  `https://xezsyblbczsbxzvrffut.supabase.co/storage/v1/object/public/uploads/anyhome/${n}.jpg`;
+
 /** Ảnh minh hoạ tạm (Unsplash) — next/image tự chuyển sang AVIF/WebP. */
 export const img = (id: string, w = 1600) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
@@ -69,19 +76,19 @@ export const defaultSettings: SiteSettings = {
 
 export const heroSlides = [
   {
-    image: img("1600585154340-be6161a56a0c", 2400),
+    image: photo("07"),
     eyebrow: "Design & Build",
     title: "Kiến tạo những công trình bền vững",
     caption: "Biệt thự · Nhà phố · Căn hộ cao cấp",
   },
   {
-    image: img("1565008447742-97f6f38c985c", 2400),
+    image: photo("11"),
     eyebrow: "Công trình công nghiệp",
     title: "Vững chắc từ kết cấu, tinh tế trong hoàn thiện",
     caption: "Nhà máy · Nhà xưởng · Showroom",
   },
   {
-    image: img("1600210492486-724fe5c67fb0", 2400),
+    image: photo("29"),
     eyebrow: "Thiết kế & Thi công nội thất",
     title: "Không gian mang “chất riêng” của chính bạn",
     caption: "Sản xuất nội thất theo thiết kế riêng",
@@ -296,7 +303,7 @@ const seedProjects: SeedProject[] = [
     client: "Công ty Vạn Xuân",
     scope: ["Thiết kế", "Thi công"],
     summary: "Nhà máy mạ kẽm nhúng nóng với kết cấu khung thép tiền chế khẩu độ lớn, hệ thống thông gió và xử lý khí thải chuyên dụng.",
-    cover: img("1565008447742-97f6f38c985c"),
+    cover: photo("12"),
     featured: true,
   },
   {
@@ -322,7 +329,7 @@ const seedProjects: SeedProject[] = [
     client: "Công ty Xuân Phương",
     scope: ["Thiết kế", "Thi công"],
     summary: "Cụm nhà xưởng tiêu chuẩn phục vụ sản xuất và cho thuê, tối ưu khẩu độ, chiếu sáng tự nhiên và phòng cháy chữa cháy.",
-    cover: img("1586528116311-ad8dd3c8310d"),
+    cover: photo("13"),
     featured: false,
   },
   {
@@ -335,7 +342,7 @@ const seedProjects: SeedProject[] = [
     client: "Công ty TNHH Ánh sáng Tiến Dư",
     scope: ["Thiết kế", "Thi công"],
     summary: "Thiết kế và thi công trọn gói nhà máy sản xuất thiết bị chiếu sáng cùng khối văn phòng điều hành.",
-    cover: img("1590496793929-36417d3117de"),
+    cover: photo("17"),
     featured: false,
   },
   {
@@ -348,7 +355,7 @@ const seedProjects: SeedProject[] = [
     client: "Công ty Kintop",
     scope: ["Thiết kế", "Thi công"],
     summary: "Nhà máy sản xuất thiết bị công nghiệp, kết cấu thép kết hợp bê tông cốt thép, cầu trục 10 tấn.",
-    cover: img("1541888946425-d81bb19240f5"),
+    cover: photo("15"),
     featured: true,
   },
   {
@@ -361,7 +368,7 @@ const seedProjects: SeedProject[] = [
     client: "Công ty CP Nhôm kính HCC",
     scope: ["Thiết kế", "Thi công"],
     summary: "Nhà máy gia công nhôm kính với dây chuyền khép kín, mặt bằng bố trí theo luồng sản xuất một chiều.",
-    cover: img("1486406146926-c627a92ad1ab"),
+    cover: photo("14"),
     featured: false,
   },
   {
@@ -374,7 +381,8 @@ const seedProjects: SeedProject[] = [
     client: "Đại lý VinFast Vĩnh Yên",
     scope: ["Thi công"],
     summary: "Thi công showroom – xưởng dịch vụ theo bộ nhận diện tiêu chuẩn của thương hiệu.",
-    cover: img("1497366811353-6870744d04b2"),
+    cover: photo("05"),
+    gallery: [photo("05"), photo("03"), photo("04")],
     featured: false,
   },
   {
@@ -387,7 +395,7 @@ const seedProjects: SeedProject[] = [
     client: "MING SHIN",
     scope: ["Thi công", "Giám sát"],
     summary: "Nhà máy vốn FDI, thi công kết cấu thép khẩu độ lớn và hệ thống kỹ thuật MEP đồng bộ.",
-    cover: img("1517089596392-fb9a9033e05b"),
+    cover: photo("11"),
     featured: false,
   },
   {
@@ -399,8 +407,8 @@ const seedProjects: SeedProject[] = [
     year: 2024,
     scope: ["Thiết kế", "Thi công"],
     summary: "Biệt thự phong cách Địa Trung Hải với mái ngói đỏ, vòm cong và sân vườn bao quanh.",
-    cover: img("1599809275671-b5942cabc7a2"),
-    beforeAfter: { render: img("1599809275671-b5942cabc7a2"), real: img("1599809275671-b5942cabc7a2") },
+    cover: photo("55"),
+    gallery: [photo("55"), photo("56"), photo("51"), photo("49"), photo("50"), photo("52"), photo("53"), photo("54"), photo("48")],
     featured: true,
   },
   {
@@ -412,8 +420,7 @@ const seedProjects: SeedProject[] = [
     year: 2023,
     scope: ["Thiết kế", "Thi công"],
     summary: "Biệt thự nghỉ dưỡng mái Nhật, hòa vào cảnh quan đồi núi với vật liệu gỗ và đá tự nhiên.",
-    cover: img("1600596542815-ffad4c1539a9"),
-    beforeAfter: { render: img("1600596542815-ffad4c1539a9"), real: img("1600596542815-ffad4c1539a9") },
+    cover: photo("07"),
     featured: true,
   },
   {
@@ -425,8 +432,7 @@ const seedProjects: SeedProject[] = [
     year: 2024,
     scope: ["Thiết kế", "Thi công"],
     summary: "Biệt thự hiện đại với mặt đứng kính lớn, giếng trời trung tâm và tầng hầm để xe.",
-    cover: img("1600585154340-be6161a56a0c"),
-    beforeAfter: { render: img("1600585154340-be6161a56a0c"), real: img("1600585154340-be6161a56a0c") },
+    cover: photo("18"),
     featured: true,
   },
   {
@@ -438,7 +444,7 @@ const seedProjects: SeedProject[] = [
     year: 2025,
     scope: ["Thiết kế", "Thi công"],
     summary: "Biệt thự tân cổ điển cho gia đình ba thế hệ, công năng tách bạch và sân vườn riêng.",
-    cover: img("1512917774080-9991f1c4c750"),
+    cover: photo("08"),
     featured: false,
   },
   {
@@ -450,7 +456,8 @@ const seedProjects: SeedProject[] = [
     year: 2022,
     scope: ["Thiết kế"],
     summary: "Khách sạn 3 sao với sảnh đón thông tầng, nhà hàng và 60 phòng nghỉ.",
-    cover: img("1566073771259-6a8506099945"),
+    cover: photo("63"),
+    gallery: [photo("63"), photo("62")],
     featured: false,
   },
   {
@@ -462,7 +469,7 @@ const seedProjects: SeedProject[] = [
     year: 2024,
     scope: ["Thiết kế"],
     summary: "Tòa văn phòng mặt tiền kính hướng biển, kết cấu khung BTCT kết hợp lam chắn nắng.",
-    cover: img("1487958449943-2429e8be8625"),
+    cover: photo("58"),
     featured: false,
   },
   {
@@ -474,7 +481,7 @@ const seedProjects: SeedProject[] = [
     year: 2022,
     scope: ["Thiết kế"],
     summary: "Khối giảng đường và thư viện với hành lang thông gió tự nhiên phù hợp khí hậu miền Trung.",
-    cover: img("1523217582562-09d0def993a6"),
+    cover: photo("06"),
     featured: false,
   },
   {
@@ -498,7 +505,8 @@ const seedProjects: SeedProject[] = [
     year: 2023,
     scope: ["Thiết kế", "Thi công"],
     summary: "Chung cư mini 24 căn hộ, tối ưu diện tích cho thuê và hệ thống PCCC theo quy chuẩn mới.",
-    cover: img("1574362848149-11496d93a7c7"),
+    cover: photo("59"),
+    gallery: [photo("59"), photo("60"), photo("57")],
     featured: false,
   },
   {
@@ -510,7 +518,8 @@ const seedProjects: SeedProject[] = [
     year: 2026,
     scope: ["Giám sát"],
     summary: "Giám sát thi công hoàn thiện kiến trúc và nội thất các căn biệt thự tại Vinhomes Royal Island.",
-    cover: img("1600047509807-ba8f99d2cdde"),
+    cover: photo("45"),
+    gallery: [photo("45"), photo("42"), photo("44"), photo("43"), photo("46"), photo("47"), photo("41")],
     featured: false,
   },
   {
@@ -522,9 +531,8 @@ const seedProjects: SeedProject[] = [
     year: 2025,
     scope: ["Thiết kế", "Sản xuất", "Thi công"],
     summary: "Nội thất hiện đại tông ấm, toàn bộ đồ gỗ sản xuất tại xưởng Anyhome theo kích thước riêng.",
-    cover: img("1600210492486-724fe5c67fb0"),
-    gallery: [img("1600210492486-724fe5c67fb0"), img("1618221195710-dd6b41faaea6"), img("1616486338812-3dadae4b4ace")],
-    beforeAfter: { render: img("1600210492486-724fe5c67fb0"), real: img("1600210492486-724fe5c67fb0") },
+    cover: photo("29"),
+    gallery: [photo("29"), photo("37"), photo("38"), photo("40"), photo("26"), photo("24"), photo("25"), photo("28"), photo("22"), photo("23"), photo("21"), photo("19"), photo("33"), photo("34"), photo("35"), photo("36")],
     featured: true,
   },
   {
@@ -616,7 +624,7 @@ export const posts: Post[] = [
     excerpt: "Mô hình tổng thầu Design & Build giúp hạn chế sai lệch giữa bản vẽ và thực tế, tối ưu chi phí và kiểm soát tiến độ.",
     content:
       "<p>Khi thiết kế và thi công do hai đơn vị khác nhau đảm nhận, chủ đầu tư thường phải tự xử lý những xung đột giữa bản vẽ và hiện trường.</p><h2>3 lợi ích cốt lõi</h2><ul><li><strong>Một đầu mối chịu trách nhiệm</strong> cho toàn bộ chất lượng.</li><li><strong>Dự toán sát thực tế</strong> ngay từ giai đoạn ý tưởng.</li><li><strong>Rút ngắn tiến độ</strong> nhờ triển khai song song thiết kế – sản xuất.</li></ul><blockquote>Anyhome – Thiết kế khác biệt, kiến tạo không gian giá trị.</blockquote>",
-    cover: img("1503387762-592deb58ef4e"),
+    cover: photo("64"),
     category: "knowledge",
     tags: ["Design & Build", "Tư vấn"],
     author: "Phòng Thiết kế",
@@ -631,7 +639,7 @@ export const posts: Post[] = [
     excerpt: "Anyhome chính thức triển khai thi công nhà xưởng 7.200 m² cho Công ty Kintop tại Cẩm Giàng, Hải Dương.",
     content:
       "<p>Sáng nay, Anyhome cùng chủ đầu tư tổ chức lễ khởi công nhà máy Kintop.</p><h2>Quy mô dự án</h2><p>Nhà xưởng kết cấu thép kết hợp bê tông cốt thép, trang bị cầu trục 10 tấn.</p>",
-    cover: img("1541888946425-d81bb19240f5"),
+    cover: photo("15"),
     category: "construction-log",
     tags: ["Công nghiệp", "Khởi công"],
     author: "Ban Chỉ huy công trường",
@@ -645,7 +653,7 @@ export const posts: Post[] = [
     title: "Xu hướng nội thất Japandi 2026: tối giản, ấm áp và bền vững",
     excerpt: "Gỗ sáng màu, đường nét tối giản và ánh sáng gián tiếp — vì sao Japandi tiếp tục dẫn dắt nội thất căn hộ cao cấp.",
     content: "<p>Japandi là sự giao thoa giữa tinh thần wabi-sabi Nhật Bản và công năng Bắc Âu.</p>",
-    cover: img("1618221195710-dd6b41faaea6"),
+    cover: photo("28"),
     category: "knowledge",
     tags: ["Nội thất", "Xu hướng"],
     author: "Studio Nội thất",
@@ -659,7 +667,7 @@ export const posts: Post[] = [
     title: "Tuyển dụng Kỹ sư giám sát xây dựng (Hà Nội, Hải Phòng)",
     excerpt: "Anyhome mở rộng đội ngũ, tuyển 05 kỹ sư giám sát dân dụng và công nghiệp.",
     content: "<p>Bản nháp — đang hoàn thiện mô tả công việc.</p>",
-    cover: img("1504307651254-35680f356dfd"),
+    cover: photo("65"),
     category: "recruitment",
     tags: ["Tuyển dụng"],
     author: "Phòng Nhân sự",
