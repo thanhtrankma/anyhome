@@ -20,7 +20,7 @@ export function SiteFooter({ settings, content }: { settings: SiteSettings; cont
       <div className="pointer-events-none absolute -top-40 -right-40 hidden size-[480px] rotate-45 bg-gold-300/5 md:block" aria-hidden />
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:gap-12 sm:px-6 sm:py-16 lg:grid-cols-[1.4fr_1fr_1.2fr] lg:px-8">
         <div>
-          <Logo />
+          <Logo src={general.logo} alt={general.brand} />
           <p className="mt-6 hidden max-w-sm text-sm leading-relaxed text-navy-200/80 sm:block">{general.tagline}</p>
           <dl className="mt-6 space-y-1 text-xs text-navy-300">
             <div>

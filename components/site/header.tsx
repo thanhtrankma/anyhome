@@ -15,11 +15,15 @@ export function SiteHeader({
   hotlines,
   navItems,
   ctaLabel,
+  logo,
+  brand,
   solid = false,
 }: {
   hotlines: string[];
   navItems: { label: string; href: string }[];
   ctaLabel: string;
+  logo?: string;
+  brand: string;
   solid?: boolean;
 }) {
   const [hotline] = hotlines;
@@ -70,8 +74,8 @@ export function SiteHeader({
       )}
     >
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
-        <Link href="/" aria-label="Anyhome – Trang chủ" className="shrink-0">
-          <Logo />
+        <Link href="/" aria-label={`${brand} – Trang chủ`} className="shrink-0">
+          <Logo src={logo} alt={brand} />
         </Link>
 
         <nav aria-label="Điều hướng chính" className="hidden lg:block">
@@ -116,7 +120,7 @@ export function SiteHeader({
             <SheetContent side="right" className="theme-light border-none bg-navy-950 p-0 text-white data-[side=right]:w-[86vw] data-[side=right]:sm:max-w-sm">
               <SheetTitle className="sr-only">Menu</SheetTitle>
               <div className="flex h-full flex-col p-6">
-                <Logo className="mb-10" />
+                <Logo src={logo} alt={brand} className="mb-10" />
                 <AnimatePresence>
                   <ul className="flex flex-col">
                     {navItems.map((item, i) => (

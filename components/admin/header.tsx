@@ -40,7 +40,7 @@ const timeAgo = (iso: string) => {
   return `${Math.round(hours / 24)} ngày trước`;
 };
 
-export function AdminHeader({ newLeads, userName }: { newLeads: Lead[]; userName: string }) {
+export function AdminHeader({ newLeads, userName, logo }: { newLeads: Lead[]; userName: string; logo?: string }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [loggingOut, startLogout] = useTransition();
@@ -59,7 +59,7 @@ export function AdminHeader({ newLeads, userName }: { newLeads: Lead[]; userName
         </SheetTrigger>
         <SheetContent side="left" className="border-none p-0 data-[side=left]:w-72" showCloseButton={false}>
           <SheetTitle className="sr-only">Menu quản trị</SheetTitle>
-          <SidebarNav newLeads={newLeads.length} userName={userName} onNavigate={() => setMobileOpen(false)} />
+          <SidebarNav newLeads={newLeads.length} userName={userName} logo={logo} onNavigate={() => setMobileOpen(false)} />
         </SheetContent>
       </Sheet>
 

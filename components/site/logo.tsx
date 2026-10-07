@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { cn } from "@/lib/utils";
 
 /** Logo chữ A cách điệu theo nhận diện Anyhome (navy + vàng đồng). */
@@ -11,7 +13,35 @@ export function LogoMark({ className }: { className?: string }) {
   );
 }
 
-export function Logo({ className, tone = "light" }: { className?: string; tone?: "light" | "dark" }) {
+/** Logo tải lên trong /admin/settings/general — giữ tỉ lệ, cao cố định theo `className` (mặc định h-10). */
+export function LogoImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      width={240}
+      height={80}
+      sizes="240px"
+      // SVG không qua bộ tối ưu ảnh của Next
+      unoptimized={src.split("?")[0].endsWith(".svg")}
+      className={cn("h-10 w-auto max-w-56 object-contain object-left", className)}
+    />
+  );
+}
+
+export function Logo({
+  className,
+  tone = "light",
+  src,
+  alt = "Anyhome",
+}: {
+  className?: string;
+  tone?: "light" | "dark";
+  /** Ảnh logo tuỳ chỉnh; trống thì dùng logo SVG mặc định */
+  src?: string;
+  alt?: string;
+}) {
+  if (src) return <LogoImage src={src} alt={alt} className={className} />;
   return (
     <span className={cn("flex items-center gap-2.5", className)}>
       <LogoMark className={tone === "light" ? "text-white" : "text-navy-800"} />

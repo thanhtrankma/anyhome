@@ -3,15 +3,18 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { LoginForm } from "@/components/admin/login-form";
-import { Logo, LogoMark } from "@/components/site/logo";
+import { Logo, LogoImage, LogoMark } from "@/components/site/logo";
 import { isAuthConfigured } from "@/lib/auth";
 import { img } from "@/lib/data";
+import { getSiteContent } from "@/lib/store";
 
 export const metadata = { title: "Đăng nhập" };
 
 export default async function LoginPage({ searchParams }: PageProps<"/admin/login">) {
   const { next } = await searchParams;
   const configured = isAuthConfigured();
+  const { general } = await getSiteContent();
+  const lightLogo = general.logoOnLight || general.logo;
 
   return (
     <div className="grid min-h-dvh bg-background lg:grid-cols-[1.1fr_1fr]">
@@ -27,7 +30,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/admin/logi
         />
         <div className="absolute inset-0 bg-linear-to-t from-navy-950 via-navy-900/70 to-navy-900/30" />
         <div className="relative flex h-full flex-col justify-between p-12 text-white">
-          <Logo />
+          <Logo src={general.logo} alt={general.brand} />
           <div className="max-w-md">
             <p className="text-xs font-semibold tracking-[0.25em] text-gold-300 uppercase">Content Studio</p>
             <h2 className="mt-4 text-4xl leading-tight font-bold tracking-tight text-balance">
@@ -50,7 +53,11 @@ export default async function LoginPage({ searchParams }: PageProps<"/admin/logi
         </Link>
 
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-12">
-          <LogoMark className="size-12 text-navy-800 lg:hidden dark:text-white" />
+          {lightLogo ? (
+            <LogoImage src={lightLogo} alt={general.brand} className="h-12 lg:hidden" />
+          ) : (
+            <LogoMark className="size-12 text-navy-800 lg:hidden dark:text-white" />
+          )}
           <h1 className="mt-6 text-3xl font-bold tracking-tight lg:mt-0">Đăng nhập quản trị</h1>
           <p className="mt-2 text-sm text-muted-foreground">Chào mừng trở lại. Nhập tài khoản để tiếp tục.</p>
 

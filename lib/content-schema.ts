@@ -28,6 +28,8 @@ export interface SiteContent {
     seoDescription: string;
     ogImage: string;
     favicon: string;
+    logo: string;
+    logoOnLight: string;
     facebookUrl: string;
     youtubeUrl: string;
     tiktokUrl: string;
@@ -182,6 +184,24 @@ export const contentGroups: ContentGroup[] = [
           { name: "seoTitle", label: "Tiêu đề trang chủ (SEO title)", type: "text", help: "Nên dưới 60 ký tự" },
           { name: "seoDescription", label: "Mô tả (SEO description)", type: "textarea", help: "Nên 120–160 ký tự" },
           { name: "ogImage", label: "Ảnh chia sẻ mạng xã hội (OG image)", type: "image", help: "Tỉ lệ 1200 × 630" },
+        ],
+      },
+      {
+        title: "Logo",
+        description: "Để trống sẽ dùng logo chữ A mặc định. Nên dùng PNG/WebP nền trong suốt, chiều cao tối thiểu 96 px.",
+        fields: [
+          {
+            name: "logo",
+            label: "Logo trên nền tối",
+            type: "image",
+            help: "Dùng ở header, footer, menu điện thoại, trang đăng nhập và khung quản trị (nền xanh navy) — nên là logo chữ sáng màu.",
+          },
+          {
+            name: "logoOnLight",
+            label: "Logo trên nền sáng (tuỳ chọn)",
+            type: "image",
+            help: "Dùng ở trang đăng nhập trên điện thoại. Để trống sẽ dùng logo trên nền tối.",
+          },
         ],
       },
       {

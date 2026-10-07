@@ -6,17 +6,19 @@ import { usePathname } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { ADMIN_NAV, activeNavHref, initials } from "@/components/admin/nav";
-import { LogoMark } from "@/components/site/logo";
+import { LogoImage, LogoMark } from "@/components/site/logo";
 import { logout } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 
 export function SidebarNav({
   newLeads,
   userName,
+  logo,
   onNavigate,
 }: {
   newLeads: number;
   userName: string;
+  logo?: string;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
@@ -28,11 +30,20 @@ export function SidebarNav({
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       <Link href="/admin" onClick={onNavigate} className="flex h-16 shrink-0 items-center gap-3 border-b border-sidebar-border px-5">
-        <LogoMark className="size-8 text-white" />
-        <span className="leading-tight">
-          <span className="block text-sm font-extrabold tracking-[0.18em] text-white">ANYHOME</span>
-          <span className="block text-[10px] tracking-widest text-sidebar-primary uppercase">Content Studio</span>
-        </span>
+        {logo ? (
+          <span className="min-w-0 leading-tight">
+            <LogoImage src={logo} alt="Trang quản trị" className="h-8 max-w-40" />
+            <span className="mt-1 block text-[10px] tracking-widest text-sidebar-primary uppercase">Content Studio</span>
+          </span>
+        ) : (
+          <>
+            <LogoMark className="size-8 text-white" />
+            <span className="leading-tight">
+              <span className="block text-sm font-extrabold tracking-[0.18em] text-white">ANYHOME</span>
+              <span className="block text-[10px] tracking-widest text-sidebar-primary uppercase">Content Studio</span>
+            </span>
+          </>
+        )}
       </Link>
 
       <nav aria-label="Quản trị" className="flex-1 space-y-6 overflow-y-auto px-3 py-5">

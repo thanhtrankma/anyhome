@@ -20,7 +20,7 @@ export function SiteShell({
   const hotlines = getHotlines(settings);
   return (
     <div className="theme-light overflow-x-clip bg-background text-foreground">
-      <SiteHeader hotlines={hotlines} navItems={content.header.navItems} ctaLabel={content.header.ctaLabel} solid={solidHeader} />
+      <SiteHeader hotlines={hotlines} navItems={content.header.navItems} ctaLabel={content.header.ctaLabel} logo={content.general.logo} brand={content.general.brand} solid={solidHeader} />
       <main>{children}</main>
       <SiteFooter settings={settings} content={content} />
       <FloatingContact hotlines={hotlines} zalo={settings.zalo} />
